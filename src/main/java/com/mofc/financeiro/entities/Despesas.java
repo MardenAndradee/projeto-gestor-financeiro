@@ -1,9 +1,13 @@
 package com.mofc.financeiro.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "TB_DESPESAS")
@@ -21,10 +25,19 @@ public class Despesas implements Serializable {
     private String formaPagamento;
     private int qtdParcelas;
     private int nParcela;
-    private int identificador;
+    @NotNull
+    private Long identificador;
     @ManyToOne
     @JoinColumn(name="usuario_id")
     private Usuarios usuario;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate data;
+
+    public Despesas() {
+    }
+
+    public Despesas(@NotBlank String descricao, double valor, Categorias categoria, String forma, int qtdParcelas, int nparcela, Long identificador, Usuarios usuario, LocalDate dataDespesa) {
+    }
 
     public long getIdDespesa() {
         return idDespesa;
@@ -82,11 +95,11 @@ public class Despesas implements Serializable {
         this.nParcela = nParcela;
     }
 
-    public int getIdentificador() {
+    public Long getIdentificador() {
         return identificador;
     }
 
-    public void setIdentificador(int identificador) {
+    public void setIdentificador(Long identificador) {
         this.identificador = identificador;
     }
 
@@ -97,4 +110,8 @@ public class Despesas implements Serializable {
     public void setUsuario(Usuarios usuario) {
         this.usuario = usuario;
     }
+
+    public LocalDate getData(){return this.data;}
+
+    public void setData(LocalDate data){this.data = data;}
 }

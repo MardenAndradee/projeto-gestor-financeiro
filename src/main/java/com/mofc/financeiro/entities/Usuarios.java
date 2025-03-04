@@ -1,12 +1,17 @@
 package com.mofc.financeiro.entities;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "TB_USUARIOS")
-public class Usuarios implements Serializable{
+public class Usuarios implements Serializable, UserDetails {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -17,6 +22,16 @@ public class Usuarios implements Serializable{
     private int celular;
     private String login;
     private String senha;
+
+    public Usuarios(){}
+
+    public Usuarios(String nome, String email, int celular, String login, String senha) {
+        this.nome = nome;
+        this.email = email;
+        this.celular = celular;
+        this.login = login;
+        this.senha = senha;
+    }
 
     public long getIdUsuario() {
         return idUsuario;
@@ -64,5 +79,40 @@ public class Usuarios implements Serializable{
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getPassword() {
+        return senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return login;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

@@ -7,6 +7,7 @@ import com.mofc.financeiro.entities.Usuarios;
 import com.mofc.financeiro.repositories.CategoriasRepository;
 import com.mofc.financeiro.repositories.DespesasRepository;
 import com.mofc.financeiro.repositories.UsuariosRepository;
+import com.mofc.financeiro.services.DespesasService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,17 +28,17 @@ public class DespesasController {
     UsuariosRepository usuariosRepository;
     @Autowired
     CategoriasRepository categoriasRepository;
+    @Autowired
+    DespesasService despesasService;
 
     @PostMapping("/despesa")
     public ResponseEntity<Despesas> saveDespesas(@RequestBody @Valid DespesasDTO despesasDTO){
         var despesas = new Despesas();
         BeanUtils.copyProperties(despesasDTO, despesas);
 
-        // Buscar o usuário pelo ID antes de salvar
         Usuarios usuario = usuariosRepository.findById(despesasDTO.getUsuario().getIdUsuario())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        // Buscar o categoria pelo ID antes de salvar
         Categorias categoria = categoriasRepository.findById(despesasDTO.getCategoria().getIdCategoria())
                 .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
 
@@ -45,6 +47,18 @@ public class DespesasController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(despesasRepository.save(despesas));
     }
+
+//    @PostMapping("/despesa")
+//    public ResponseEntity<Object> saveDespesas(@RequestBody @Valid DespesasDTO despesasDTO) {
+//        try {
+//            despesasService.salvarDespesa(despesasDTO);
+//            return ResponseEntity.status(HttpStatus.CREATED).body("Despesas cadastradas com sucesso!");
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+//        }
+//    }
+
+
 
     @GetMapping("/despesa")
     public ResponseEntity<List<Despesas>> getAllDespesas(){
