@@ -1,10 +1,9 @@
 package com.mofc.financeiro.repositories;
 
-import com.mofc.financeiro.entities.Despesas;
+import com.mofc.financeiro.entities.Parcelas;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DespesasRepository extends JpaRepository<Despesas, Long> {
-
+public interface ParcelasRepository extends JpaRepository<Parcelas, Long> {
 }

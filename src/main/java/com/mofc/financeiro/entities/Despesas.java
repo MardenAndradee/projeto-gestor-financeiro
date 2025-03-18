@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "TB_DESPESAS")
@@ -24,19 +25,26 @@ public class Despesas implements Serializable {
     private Categorias categoria;
     private String formaPagamento;
     private int qtdParcelas;
-    private int nParcela;
-    @NotNull
-    private Long identificador;
     @ManyToOne
     @JoinColumn(name="usuario_id")
     private Usuarios usuario;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate data;
+    @OneToMany(mappedBy = "despesa", cascade = CascadeType.ALL)
+    private List<Parcelas> parcelas;
+
+    public List<Parcelas> getParcelas() {
+        return parcelas;
+    }
+
+    public void setParcelas(List<Parcelas> parcelas) {
+        this.parcelas = parcelas;
+    }
 
     public Despesas() {
     }
 
-    public Despesas(@NotBlank String descricao, double valor, Categorias categoria, String forma, int qtdParcelas, int nparcela, Long identificador, Usuarios usuario, LocalDate dataDespesa) {
+    public Despesas(@NotBlank String descricao, double valor, Categorias categoria, String forma, int qtdParcelas, Usuarios usuario, LocalDate dataDespesa) {
     }
 
     public long getIdDespesa() {
@@ -85,22 +93,6 @@ public class Despesas implements Serializable {
 
     public void setQtdParcelas(int qtdParcelas) {
         this.qtdParcelas = qtdParcelas;
-    }
-
-    public int getnParcela() {
-        return nParcela;
-    }
-
-    public void setnParcela(int nParcela) {
-        this.nParcela = nParcela;
-    }
-
-    public Long getIdentificador() {
-        return identificador;
-    }
-
-    public void setIdentificador(Long identificador) {
-        this.identificador = identificador;
     }
 
     public Usuarios getUsuario() {

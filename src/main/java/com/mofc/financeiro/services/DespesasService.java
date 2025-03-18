@@ -1,17 +1,16 @@
 package com.mofc.financeiro.services;
 
-import com.mofc.financeiro.dtos.DespesasDTO;
-import com.mofc.financeiro.entities.Categorias;
 import com.mofc.financeiro.entities.Despesas;
-import com.mofc.financeiro.entities.Usuarios;
+import com.mofc.financeiro.entities.Parcelas;
 import com.mofc.financeiro.repositories.CategoriasRepository;
 import com.mofc.financeiro.repositories.DespesasRepository;
+import com.mofc.financeiro.repositories.ParcelasRepository;
 import com.mofc.financeiro.repositories.UsuariosRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class DespesasService {
@@ -22,40 +21,35 @@ public class DespesasService {
     private CategoriasRepository categoriasRepository;
     @Autowired
     private UsuariosRepository usuariosRepository;
+    @Autowired
+    private ParcelasRepository parcelasRepository;
 
-    private Long gerarIdentificador() {
-        Long identificador = despesasRepository.count() + 1;
-        return identificador;
-    }
+    public Despesas registrarDespesaComParcelas(Despesas despesa) {
+        // Salva a despesa
+        despesa = despesasRepository.save(despesa);
 
-    @Transactional
-    public void salvarDespesa(DespesasDTO despesasDTO) {
-        var despesas = new Despesas();
-        BeanUtils.copyProperties(despesasDTO, despesas);
+        // Calcula o valor de cada parcela
+        Double valorParcela = despesa.getValor() / despesa.getQtdParcelas();
 
-            Usuarios usuario = usuariosRepository.findById(despesasDTO.getUsuario().getIdUsuario())
-                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        // Cria as parcelas
+        List<Parcelas> parcelas = new ArrayList<>();
+        for (int i = 1; i <= despesa.getQtdParcelas(); i++) {
+            Parcelas parcela = new Parcelas();
+            parcela.setnParcela(i);
+            parcela.setValor(valorParcela);
+            parcela.setDespesa(despesa);
+            parcela.setDataParcela(despesa.getData());
+            parcelas.add(parcela);
+        }
 
-            Categorias categoria = categoriasRepository.findById(despesasDTO.getCategoria().getIdCategoria())
-                    .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+        // Salva as parcelas
+        parcelasRepository.saveAll(parcelas);
 
-            double valor = despesas.getValor();
-            int qtdParcelas = despesasDTO.qtdParcelas();
-            LocalDate data = despesas.getData();
-
-            if (despesas.getFormaPagamento().equalsIgnoreCase("credito")) {
-                valor = valor / qtdParcelas;
-            }
-
-            int nparcela = 1;
-            for (int i = 1; i <= qtdParcelas; i++) {
-                Despesas despesa = new Despesas(despesas.getDescricao(), valor, categoria, despesas.getFormaPagamento(),
-                        qtdParcelas, nparcela, despesas.getIdentificador(), usuario, data);
-
-                despesasRepository.save(despesa);
-
-                nparcela++;
-                data = data.plusMonths(1);
-            }
+        // Associa as parcelas à despesa
+        despesa.setParcelas(parcelas);
+        return despesa;
     }
 }
+
+
+
