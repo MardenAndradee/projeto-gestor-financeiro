@@ -30,16 +30,7 @@ public class Despesas implements Serializable {
     private Usuarios usuario;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate data;
-    @OneToMany(mappedBy = "despesa", cascade = CascadeType.ALL)
-    private List<Parcelas> parcelas;
 
-    public List<Parcelas> getParcelas() {
-        return parcelas;
-    }
-
-    public void setParcelas(List<Parcelas> parcelas) {
-        this.parcelas = parcelas;
-    }
 
     public Despesas() {
     }

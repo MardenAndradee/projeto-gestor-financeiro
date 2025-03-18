@@ -45,8 +45,6 @@ public class DespesasService {
         // Salva as parcelas
         parcelasRepository.saveAll(parcelas);
 
-        // Associa as parcelas à despesa
-        despesa.setParcelas(parcelas);
         return despesa;
     }
 }
