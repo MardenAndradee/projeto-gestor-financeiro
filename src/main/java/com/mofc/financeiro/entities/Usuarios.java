@@ -1,6 +1,9 @@
 package com.mofc.financeiro.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +23,11 @@ public class Usuarios implements Serializable, UserDetails {
     private String nome;
     private String email;
     private int celular;
+
+    @Column(name = "login",length = 15,nullable = false,unique = true)
+    @NotNull
+    @NotEmpty
+    @Size(min = 4, max = 10 )
     private String login;
     private String senha;
 
