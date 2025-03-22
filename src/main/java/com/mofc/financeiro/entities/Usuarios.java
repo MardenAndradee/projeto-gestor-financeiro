@@ -27,7 +27,7 @@ public class Usuarios implements Serializable, UserDetails {
     @Column(name = "login",length = 15,nullable = false,unique = true)
     @NotNull
     @NotEmpty
-    @Size(min = 4, max = 10 )
+    @Size(min = 4, max = 15 )
     private String login;
     private String senha;
 
