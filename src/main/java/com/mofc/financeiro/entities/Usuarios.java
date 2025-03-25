@@ -45,7 +45,7 @@ public class Usuarios implements Serializable, UserDetails {
         return idUsuario;
     }
 
-    public void setIdUsuario(long idUsuario) {
+    public void setIdUsuario(Long idUsuario) {
         this.idUsuario = idUsuario;
     }
 

@@ -6,10 +6,12 @@ import com.mofc.financeiro.dtos.RegisterDTO;
 import com.mofc.financeiro.entities.Usuarios;
 import com.mofc.financeiro.infra.security.TokenService;
 import com.mofc.financeiro.repositories.UsuariosRepository;
+import com.mofc.financeiro.services.exceptions.ObjectNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,14 +30,20 @@ public class AuthenticationController {
     @Autowired
     private TokenService tokenService;
 
+
+
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(),data.senha());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
+        try {
+            var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.senha());
+            var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        var token = tokenService.generatetoken((Usuarios) auth.getPrincipal());
+            var token = tokenService.generatetoken((Usuarios) auth.getPrincipal());
 
-        return ResponseEntity.ok(new LoginReponseDTO(token));
+            return ResponseEntity.ok(new LoginReponseDTO(token));
+        }catch (BadCredentialsException ex){
+            throw new ObjectNotFoundException("Login não permitido");
+        }
     }
 
     @PostMapping("/register")
