@@ -25,7 +25,9 @@ export function useAuth() {
       localStorage.setItem("token", data.token);
       alert("Login realizado com sucesso! Token: " + data.token);
     } catch (err) {
-      setError("Usuário ou senha inválidos");
+      if(err instanceof Error){
+        setError(err.message);
+      }
     }
   };
 

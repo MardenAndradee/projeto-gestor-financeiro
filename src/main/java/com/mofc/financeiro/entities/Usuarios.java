@@ -17,19 +17,46 @@ import java.util.List;
 public class Usuarios implements Serializable, UserDetails {
     private static final long serialVersionUID = 1L;
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long idUsuario;
+
+
+    @Column(name = "nome",length = 25,nullable = false,unique = true)
+    @NotNull
+    @NotEmpty
+    @Size(min = 4, max = 25)
     private String nome;
+
+    @Column(name = "email",length = 30,nullable = false,unique = true)
+    @NotNull
+    @NotEmpty
+    @Size(min = 4, max = 30)
     private String email;
+
+
+    @Column(name = "celular",length = 12,nullable = false,unique = true)
+    @NotNull
+    @NotEmpty
+    @Size(min = 8, max = 12)
     private int celular;
+
 
     @Column(name = "login",length = 15,nullable = false,unique = true)
     @NotNull
     @NotEmpty
-    @Size(min = 4, max = 15 )
+    @Size(min = 4, max = 15)
     private String login;
+
+
+    @Column(name = "senha",length = 20,nullable = false,unique = false)
+    @NotNull
+    @NotEmpty
+    @Size(min = 3, max = 20)
     private String senha;
+
+
 
     public Usuarios(){}
 

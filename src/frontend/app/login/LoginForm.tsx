@@ -32,6 +32,10 @@ export default function LoginForm() {
             onChange={(e) => setSenha(e.target.value)}
           />
         </div>
+        
+        {error && (<div className="text-red-600 text-sm">
+          {error}
+        </div>)}
   
         <div className="flex justify-between items-center text-sm">
           <a href="#" className="text-green-600 hover:underline">
