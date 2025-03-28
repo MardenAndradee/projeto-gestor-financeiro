@@ -32,6 +32,7 @@ public class Despesas implements Serializable {
     private LocalDate data;
 
 
+
     public Despesas() {
     }
 

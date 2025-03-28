@@ -2,16 +2,22 @@ package com.mofc.financeiro.services;
 
 import com.mofc.financeiro.entities.Despesas;
 import com.mofc.financeiro.entities.Parcelas;
+import com.mofc.financeiro.entities.Usuarios;
 import com.mofc.financeiro.repositories.CategoriasRepository;
 import com.mofc.financeiro.repositories.DespesasRepository;
 import com.mofc.financeiro.repositories.ParcelasRepository;
 import com.mofc.financeiro.repositories.UsuariosRepository;
+import com.mofc.financeiro.services.exceptions.ExceptionDelete;
+import com.mofc.financeiro.services.exceptions.ObjectNotFoundException;
+import jakarta.transaction.TransactionScoped;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DespesasService {
@@ -25,6 +31,43 @@ public class DespesasService {
     @Autowired
     private ParcelasRepository parcelasRepository;
 
+
+    public Despesas findById(Long idDespesa){
+        Optional<Despesas> despesas = this.despesasRepository.findById(idDespesa);
+        return despesas.orElseThrow(() -> new ObjectNotFoundException(
+                "Despesa não encontrada"
+        ));
+    }
+
+
+
+    public List<Despesas> getAllDespesas() {
+        return despesasRepository.findAll();
+    }
+
+
+
+
+    @Transactional
+    public Despesas update(Despesas despesas){
+        Despesas despesa = findById(despesas.getIdDespesa());
+        return this.despesasRepository.save(despesas);
+    }
+
+
+
+    @Transactional
+    public void deletarDespesaComParcelas(Long idDespesa) {
+        // Primeiro deleta todas as parcelas associadas
+        parcelasRepository.deleteByDespesaId(idDespesa);
+
+        // Depois deleta a despesa
+        despesasRepository.deleteById(idDespesa);
+    }
+
+
+
+    @Transactional
     public Despesas registrarDespesaComParcelas(Despesas despesa) {
         // Salva a despesa
         despesa = despesasRepository.save(despesa);
@@ -45,10 +88,7 @@ public class DespesasService {
             parcelas.add(parcela);
             data = data.plusMonths(1);
         }
-
-        // Salva as parcelas
         parcelasRepository.saveAll(parcelas);
-
         return despesa;
     }
 }

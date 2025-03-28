@@ -25,10 +25,14 @@ public class ParcelasController {
         return ResponseEntity.status(HttpStatus.CREATED).body(parcelasRepository.save(parcelas));
     }
 
+
+
     @GetMapping("/parcelas")
     public ResponseEntity<List<Parcelas>> getAllParcelas(){
         return ResponseEntity.status(HttpStatus.OK).body(parcelasRepository.findAll());
     }
+
+
 
     @GetMapping("/parcelas/{id}")
     public ResponseEntity<Object> getOneParcela(@PathVariable(value="id")long id){
@@ -38,6 +42,8 @@ public class ParcelasController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(parcelas.get());
     }
+
+
 
     @PutMapping("/parcelas/{id}")
     public ResponseEntity<Object> updateParcela(@PathVariable(value="id") long id,
@@ -51,6 +57,8 @@ public class ParcelasController {
         BeanUtils.copyProperties(parcelasDTO, parcelas);
         return ResponseEntity.status(HttpStatus.OK).body(parcelasRepository.save(parcelas));
     }
+
+
 
     @DeleteMapping("/parcelas/{id}")
     public ResponseEntity<Object> deleteParcelas(@PathVariable(value = "id") Long id){

@@ -5,19 +5,26 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "TB_PARCELAS")
+@Table(name = "tb_parcelas")
 public class Parcelas implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long idParcela;
+
+
     @ManyToOne
     @JoinColumn(name="despesa_id")
     private Despesas despesa;
+
+
     private double valor;
+
     private int nParcela;
+
     private LocalDate dataParcela;
+
 
     public long getIdParcela() {
         return idParcela;

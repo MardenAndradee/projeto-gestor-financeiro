@@ -50,10 +50,10 @@ public class Usuarios implements Serializable, UserDetails {
     private String login;
 
 
-    @Column(name = "senha",length = 20,nullable = false,unique = false)
+    @Column(name = "senha",nullable = false,unique = false)
     @NotNull
     @NotEmpty
-    @Size(min = 3, max = 20)
+
     private String senha;
 
 
