@@ -9,6 +9,7 @@ import com.mofc.financeiro.repositories.UsuariosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,24 +26,24 @@ public class DespesasService {
     private ParcelasRepository parcelasRepository;
 
     public Despesas registrarDespesaComParcelas(Despesas despesa) {
-        // Salva a despesa
         despesa = despesasRepository.save(despesa);
 
-        // Calcula o valor de cada parcela
         Double valorParcela = despesa.getValor() / despesa.getQtdParcelas();
-
-        // Cria as parcelas
         List<Parcelas> parcelas = new ArrayList<>();
+
+        LocalDate data = despesa.getData();
+
         for (int i = 1; i <= despesa.getQtdParcelas(); i++) {
             Parcelas parcela = new Parcelas();
             parcela.setnParcela(i);
             parcela.setValor(valorParcela);
             parcela.setDespesa(despesa);
-            parcela.setDataParcela(despesa.getData());
+            parcela.setDataParcela(data);
             parcelas.add(parcela);
+
+            data = data.plusMonths(1);
         }
 
-        // Salva as parcelas
         parcelasRepository.saveAll(parcelas);
 
         return despesa;
