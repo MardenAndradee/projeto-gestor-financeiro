@@ -2,9 +2,12 @@ package com.mofc.financeiro.controllers;
 
 import com.mofc.financeiro.dtos.CategoriasDTO;
 import com.mofc.financeiro.entities.Categorias;
+import com.mofc.financeiro.entities.Despesas;
 import com.mofc.financeiro.entities.Usuarios;
 import com.mofc.financeiro.repositories.CategoriasRepository;
 import com.mofc.financeiro.repositories.UsuariosRepository;
+import com.mofc.financeiro.services.CategoriasService;
+import com.mofc.financeiro.services.UsuariosService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,57 +22,43 @@ import java.util.Optional;
 public class CategoriasController {
 
     @Autowired
-    CategoriasRepository categoriasRepository;
+    CategoriasService categoriasService;
 
     @Autowired
-    UsuariosRepository usuariosRepository;
+    UsuariosService usuariosService;
 
     @PostMapping("/categoria")
     public ResponseEntity<Categorias> saveCategorias(@RequestBody @Valid CategoriasDTO categoriasDTO){
         var categorias = new Categorias();
         BeanUtils.copyProperties(categoriasDTO, categorias);
-        // Buscar o usuário pelo ID antes de salvar
-        Usuarios usuario = usuariosRepository.findById(categoriasDTO.getUsuario().getIdUsuario())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
+        Usuarios usuario = usuariosService.findById(categoriasDTO.getUsuario().getIdUsuario());
         categorias.setUsuario(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(categoriasRepository.save(categorias));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoriasService.create(categorias));
     }
 
     @GetMapping("/categoria")
     public ResponseEntity<List<Categorias>> getAllCategorias(){
-        return ResponseEntity.status(HttpStatus.OK).body(categoriasRepository.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(categoriasService.getAllCategorias());
     }
 
     @GetMapping("/categoria/{id}")
     public ResponseEntity<Object> getOneCategoria(@PathVariable(value="id")long id){
-        Optional<Categorias> categorias0 = categoriasRepository.findById(id);
-        if(categorias0.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Categoria não encontrada");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(categorias0.get());
+        Categorias categorias = this.categoriasService.findById(id);
+        return ResponseEntity.ok().body(categorias);
     }
 
     @PutMapping("/categoria/{id}")
-    public ResponseEntity<Object> updateCategoria(@PathVariable(value="id") long id,
-                                                @RequestBody @Valid CategoriasDTO categoriasDTO){
-        Optional<Categorias> categorias0 = categoriasRepository.findById(id);
-        if(categorias0.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Categoria não encontrada");
-        }
-
-        var categorias = categorias0.get();
-        BeanUtils.copyProperties(categoriasDTO, categorias);
-        return ResponseEntity.status(HttpStatus.OK).body(categoriasRepository.save(categorias));
+    public ResponseEntity<Object> updateCategoria(@Valid @RequestBody Categorias categorias, @PathVariable Long id){
+        categorias.setIdCategoria(id);
+        this.categoriasService.update(categorias);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/categoria/{id}")
     public ResponseEntity<Object> deleteCategoria(@PathVariable(value = "id") Long id){
-        Optional<Categorias> categorias0 = categoriasRepository.findById(id);
-        if(categorias0.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Categoria não encontrada");
-        }
-        categoriasRepository.delete(categorias0.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Categoria deletada com sucesso!");
+        this.categoriasService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
