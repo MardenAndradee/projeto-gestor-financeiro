@@ -33,9 +33,10 @@ public class DespesasController {
     DespesasService despesasService;
     @Autowired
     UsuariosService usuariosService;
+    @Autowired
+    CategoriasService categoriasService;
 
 
-    // Esperar o mardin arrumar o categoriaService para poder estar arrumando o POST do DespesasController
     @PostMapping("/despesa")
     public Despesas registrarDespesa(@RequestBody @Valid DespesasDTO despesasDTO) {
         var despesas = new Despesas();
@@ -43,8 +44,7 @@ public class DespesasController {
 
         Usuarios usuario = usuariosService.findById(despesasDTO.getUsuario().getIdUsuario());
 
-        Categorias categoria = categoriasRepository.findById(despesasDTO.getCategoria().getIdCategoria())
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+        Categorias categoria = categoriasService.findById(despesasDTO.getCategoria().getIdCategoria());
 
         despesas.setCategoria(categoria);
         despesas.setUsuario(usuario);
