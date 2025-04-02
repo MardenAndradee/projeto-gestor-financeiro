@@ -61,8 +61,8 @@ export default function LancamentoForm({ onAdd, onClose }: LancamentoFormProps) 
           className="w-full mb-2 px-4 py-2 border rounded-lg bg-white text-gray-400"
         >
           <option>Contas fixas</option>
-          <option>Casa</option>
           <option>Alimentação</option>
+          <option>Saúde</option>
         </select>
         
         <input

@@ -1,15 +1,15 @@
-interface Lancamento {
+type Lancamento = {
   descricao: string;
   valor: number;
   categoria: string;
   formaPagamento: string;
   data: string;
   qtdParcelas: number;
-}
+};
 
-interface LancamentoListProps {
+type LancamentoListProps = {
   lancamentos: Lancamento[];
-}
+};
 
 export default function LancamentoList({ lancamentos }: LancamentoListProps) {
   return (
@@ -23,8 +23,7 @@ export default function LancamentoList({ lancamentos }: LancamentoListProps) {
               <div>
                 <p className="text-gray-800 font-medium">{item.descricao}</p>
                 <span className="text-gray-500 text-sm">
-                  {item.data} - {item.categoria} | {item.formaPagamento}{" "}
-                  {item.qtdParcelas > 1 ? ` | ${item.qtdParcelas}x` : ""}
+                  {new Date(item.data).toLocaleDateString("pt-BR")} - {item.categoria} | {item.formaPagamento}{" "} {item.qtdParcelas > 1 ? ` | ${item.qtdParcelas}x` : ""}
                 </span>
               </div>
               <span className="text-green-600 font-semibold">R$ {item.valor.toFixed(2)}</span>
