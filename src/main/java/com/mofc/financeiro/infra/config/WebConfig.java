@@ -1,4 +1,4 @@
-package com.mofc.financeiro.infra.security.config;
+package com.mofc.financeiro.infra.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
