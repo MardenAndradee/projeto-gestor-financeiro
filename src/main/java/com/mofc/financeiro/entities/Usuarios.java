@@ -1,9 +1,7 @@
 package com.mofc.financeiro.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,11 +34,11 @@ public class Usuarios implements Serializable, UserDetails {
     private String email;
 
 
-    @Column(name = "celular",length = 12,nullable = false,unique = true)
+    @Column(name = "celular", nullable = false, unique = true)
     @NotNull
     @NotEmpty
     @Size(min = 8, max = 12)
-    private int celular;
+    private String celular;
 
 
     @Column(name = "login",length = 15,nullable = false,unique = true)
@@ -60,7 +58,7 @@ public class Usuarios implements Serializable, UserDetails {
 
     public Usuarios(){}
 
-    public Usuarios(String nome, String email, int celular, String login, String senha) {
+    public Usuarios(String nome, String email, String celular, String login, String senha) {
         this.nome = nome;
         this.email = email;
         this.celular = celular;
@@ -92,11 +90,11 @@ public class Usuarios implements Serializable, UserDetails {
         this.email = email;
     }
 
-    public int getCelular() {
+    public String getCelular() {
         return celular;
     }
 
-    public void setCelular(int celular) {
+    public void setCelular(String celular) {
         this.celular = celular;
     }
 
