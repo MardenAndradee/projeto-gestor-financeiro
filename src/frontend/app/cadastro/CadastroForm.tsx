@@ -4,7 +4,7 @@ import { useRegister } from "../hooks/useRegister";
 export default function CadastroForm() {
     const {
       nome, setNome,
-      numero, setNumero,
+      celular, setNumero,
       email, setEmail,
       login, setLogin,
       senha, setSenha,
@@ -21,7 +21,7 @@ export default function CadastroForm() {
   
   
   return (
-    <form className="space-y-4">
+    <form className="space-y-4" onSubmit={handleSubmit}>
       <div>
         <label className="block text-sm font-medium text-gray-700">Nome</label>
         <input
@@ -41,7 +41,7 @@ export default function CadastroForm() {
           type="tel"
           className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 text-gray-600"
           placeholder="(XX) XXXXX-XXXX"
-          value={numero}
+          value={celular}
           onChange={(e) => setNumero(e.target.value)}
         />
       </div>
@@ -96,7 +96,7 @@ export default function CadastroForm() {
         />
       </div>
 
-      <button onClick={handleRegister}
+      <button 
         type="submit"
         className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-lg transition"
       >
