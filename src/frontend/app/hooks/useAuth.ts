@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
 
 export function useAuth() {
   const [login, setLogin] = useState("");
   const [senha, setSenha] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleLogin = async () => {
     try {
@@ -23,7 +25,10 @@ export function useAuth() {
 
       const data = await response.json();
       localStorage.setItem("token", data.token);
-      alert("Login realizado com sucesso! Token: " + data.token);
+      //alert("Login realizado com sucesso! Token: " + data.token);
+
+      router.push("/lancamentos");
+
     } catch (err) {
       setError("Usuário ou senha inválidos");
     }

@@ -1,7 +1,6 @@
 package com.mofc.financeiro.controllers;
 
 import com.mofc.financeiro.entities.Parcelas;
-import com.mofc.financeiro.repositories.ParcelasRepository;
 import com.mofc.financeiro.services.ParcelasService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,10 +50,11 @@ public class ParcelasController {
     @GetMapping("parcelas/filtrar")
     public ResponseEntity<List<Parcelas>>filtrarParcelas(
             @RequestParam(required = false)Integer mes,
-            @RequestParam(required = false) Optional<Long> categoriaId){
+            @RequestParam(required = false) Optional<Long> categoriaId,
+            @RequestParam(required = true) Optional<Long> idUsuario){
 
 
-        List<Parcelas> parcelas = parcelasService.filtrarParcelas(mes, categoriaId.orElse(null));
+        List<Parcelas> parcelas = parcelasService.filtrarParcelas(mes, categoriaId.orElse(null),idUsuario.orElse(null));
         return ResponseEntity.ok(parcelas);
 
     }

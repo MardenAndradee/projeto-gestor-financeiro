@@ -1,19 +1,24 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
 
 export function useRegister() {
   const [nome, setNome] = useState("");
-  const [numero, setNumero] = useState("");
+  const [celular, setNumero] = useState("");
   const [email, setEmail] = useState("");
   const [login, setLogin] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const router = useRouter();
 
   const handleRegister = async () => {
     if (senha !== confirmarSenha) {
       setError("As senhas não coincidem");
+      setSenha("");
+      setConfirmarSenha("");
+      alert("Senhas não coincidem")
       return;
     }
 
@@ -25,28 +30,49 @@ export function useRegister() {
         },
         body: JSON.stringify({
           nome,
-          numero,
+          celular,
           email,
           login,
           senha,
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Erro no cadastro");
-      }
+      let data;
+    try {
+      data = await response.json(); 
+    } catch {
+      data = null; 
+    }
 
-      const data = await response.json();
+    if (!response.ok) {
+      const errorMessage = data?.message || "Erro no cadastro";
+      setError(errorMessage);
+      alert(errorMessage);
+      return;
+    }
+
+      
       setSuccess("Cadastro realizado com sucesso!");
       alert("Usuário cadastrado com sucesso!");
+
+      setNome("");
+      setNumero("");
+      setEmail("");
+      setLogin("");
+      setSenha("");
+      setConfirmarSenha("");
+
+      router.push("/login");
+
     } catch (err) {
-      setError("Erro ao realizar o cadastro");
+      setError( error || "Erro ao realizar o cadastro");
+      alert(error || "Erro ao realizar cadastro");
     }
   };
 
   return {
     nome, setNome,
-    numero, setNumero,
+    celular, setNumero,
     email, setEmail,
     login, setLogin,
     senha, setSenha,
