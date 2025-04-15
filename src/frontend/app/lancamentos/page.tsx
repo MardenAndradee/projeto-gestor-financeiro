@@ -29,7 +29,6 @@ export default function LancamentosPage() {
         </div>
 
         <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">Lançamentos Recentes</h2>
           <LancamentoList lancamentos={lancamentos} />
         </div>
       </div>
