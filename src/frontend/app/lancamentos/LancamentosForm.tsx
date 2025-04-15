@@ -32,7 +32,7 @@ export default function LancamentoForm({ onAdd, onClose }: LancamentoFormProps) 
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
+    <div className="fixed inset-0 backdrop-blur-sm flex justify-center items-center">
       <div className="bg-white p-6 rounded-xl shadow-lg w-96">
         <h3 className="text-xl font-semibold  mb-2 text-gray-900">Adicionar Lançamento</h3>
         
