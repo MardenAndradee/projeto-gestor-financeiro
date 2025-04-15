@@ -9,6 +9,7 @@ import com.mofc.financeiro.repositories.DespesasRepository;
 import com.mofc.financeiro.repositories.UsuariosRepository;
 import com.mofc.financeiro.services.DespesasService;
 import com.mofc.financeiro.services.UsuariosService;
+import com.mofc.financeiro.services.CategoriasService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

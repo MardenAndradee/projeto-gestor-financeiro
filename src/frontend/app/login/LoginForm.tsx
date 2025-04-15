@@ -5,8 +5,8 @@ export default function LoginForm() {
   const { login, setLogin, senha, setSenha, error, handleLogin } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Isso evita que o formulário recarregue a página
-    await handleLogin(); // Continua usando sua função normalmente
+    e.preventDefault(); 
+    await handleLogin(); 
   };
 
     return (

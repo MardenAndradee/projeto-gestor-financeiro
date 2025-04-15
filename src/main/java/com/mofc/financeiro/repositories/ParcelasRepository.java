@@ -26,4 +26,13 @@ public interface ParcelasRepository extends JpaRepository<Parcelas, Long> {
 
     @Query("SELECT p FROM Parcelas p WHERE EXTRACT(MONTH FROM p.dataParcela) = :mes AND p.despesa.categoria.id = :categoriaId")
     List<Parcelas> findByMesAndCategoria(@Param("mes") int mes, @Param("categoriaId") Long categoriaId);
+
+    @Query("SELECT p FROM Parcelas p WHERE EXTRACT(MONTH FROM p.dataParcela) = :mes AND p.despesa.usuario.id = :usuarioId")
+    List<Parcelas> findByMesAndUsuario(@Param("mes") int mes, @Param("usuarioId") Long usuarioId);
+
+    @Query("SELECT p FROM Parcelas p WHERE p.despesa.categoria.id = :categoriaId AND p.despesa.usuario.id = :usuarioId")
+    List<Parcelas> findByCategoriaAndUsuario(@Param("categoriaId") Long categoriaId, @Param("usuarioId") Long usuarioId);
+
+    @Query("SELECT p FROM Parcelas p WHERE EXTRACT(MONTH FROM p.dataParcela) = :mes AND p.despesa.categoria.id = :categoriaId AND p.despesa.usuario.id = :usuarioId")
+    List<Parcelas> findByMesAndCategoriaAndUsuario(@Param("mes") int mes, @Param("categoriaId") Long categoriaId, @Param("usuarioId") Long usuarioId);
 }
