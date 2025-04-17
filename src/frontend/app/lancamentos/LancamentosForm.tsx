@@ -1,37 +1,64 @@
 "use client";
 import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { useLancamentos } from "../hooks/useLancamentos";
 
-interface LancamentoFormProps {
-  onAdd: (formData: LancamentoData) => void;
-  onClose: () => void;
-}
+export default function LancamentosForm(){
+  const{
+      descricao, setdescricao,
+      valor, setValor,
+      categoria, setCategoria,
+      data, setData,
+      formaPagamento, setFormaPagamento,
+      qtdParcelas, setQtdParcelas,
+      usuario, setUsuario,
+      error,
+      success,
+      handleLancamento,
+      lancamentos,
+    } = useLancamentos();
 
-interface LancamentoData {
-  descricao: string;
-  valor: string;
-  categoria: string;
-  formaPagamento: string;
-  data: string;
-  qtdParcelas: number;
-}
 
-export default function LancamentoForm({ onAdd, onClose }: LancamentoFormProps) {
-  const [formData, setFormData] = useState({
-    descricao: "",
-    valor: "",
-    categoria: "Alimentação",
-    formaPagamento: "Crédito",
-    data: "",
-    qtdParcelas: 1,
-  });
+  
 
-  const handleChange =  (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)  => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) =>{
+    e.preventDefault(); 
+    await handleLancamento(); 
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  
+    switch (name) {
+      case "descricao":
+        setdescricao(value);
+        break;
+      case "valor":
+        setValor(value);
+        break;
+      case "categoria":
+        setCategoria(value);
+        break;
+      case "data":
+        setData(value);
+        break;
+      case "formaPagamento":
+        setFormaPagamento(value);
+        break;
+      case "qtdParcelas":
+        setQtdParcelas(value);
+        break;
+      case "usuario":
+        setUsuario(value);
+        break;
+      default:
+        break;
+    }
   };
 
+
+
   return (
+    <form onSubmit={handleSubmit}>
     <div className="fixed inset-0 backdrop-blur-sm flex justify-center items-center">
       <div className="bg-white p-6 rounded-xl shadow-lg w-96">
         <h3 className="text-xl font-semibold  mb-2 text-gray-900">Adicionar Lançamento</h3>
@@ -40,8 +67,8 @@ export default function LancamentoForm({ onAdd, onClose }: LancamentoFormProps) 
           type="text"
           name="descricao"
           placeholder="Descrição"
-          value={formData.descricao}
-          onChange={handleChange}
+          value={descricao}
+          onChange={(e) => setdescricao(e.target.value)}
           className="w-full mb-2 px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400"
         />
         
@@ -49,34 +76,34 @@ export default function LancamentoForm({ onAdd, onClose }: LancamentoFormProps) 
           type="number"
           name="valor"
           placeholder="Valor"
-          value={formData.valor}
-          onChange={handleChange}
+          value={valor}
+          onChange={(e) => setValor(e.target.value)}
           className="w-full mb-2 px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400"
         />
         
         <select
           name="categoria"
-          value={formData.categoria}
-          onChange={handleChange}
+          value={categoria}
+          onChange={(e) => setCategoria(e.target.value)}
           className="w-full mb-2 px-4 py-2 border rounded-lg bg-white text-gray-400"
         >
-          <option>Contas fixas</option>
-          <option>Alimentação</option>
-          <option>Saúde</option>
+          <option value={1}>Contas fixas</option>
+          <option value={2}>Alimentação</option>
+          <option value={3}>Saúde</option>
         </select>
         
         <input
           type="date"
           name="data"
-          value={formData.data}
-          onChange={handleChange}
+          value={data}
+          onChange={(e) => setData(e.target.value)}
           className="w-full mb-2 px-4 py-2 border rounded-lg bg-white text-gray-400"
         />
         
         <select
           name="formaPagamento"
-          value={formData.formaPagamento}
-          onChange={handleChange}
+          value={formaPagamento}
+          onChange={(e) => setFormaPagamento(e.target.value)}
           className="w-full mb-2 px-4 py-2 border rounded-lg bg-white text-gray-400"
         >
           <option>Crédito</option>
@@ -85,12 +112,12 @@ export default function LancamentoForm({ onAdd, onClose }: LancamentoFormProps) 
           <option>Pix</option>
         </select>
         
-        {formData.formaPagamento === "Crédito" && (
+        {formaPagamento === "Crédito" && (
           <input
             type="number"
             name="qtdParcelas"
             min="1"
-            value={formData.qtdParcelas}
+            value={qtdParcelas}
             onChange={handleChange}
             className="w-full mb-2 px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400"
             placeholder="Quantidade de Parcelas"
@@ -99,13 +126,12 @@ export default function LancamentoForm({ onAdd, onClose }: LancamentoFormProps) 
         
         <div className="flex justify-end space-x-2">
           <button
-            onClick={onClose}
             className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
           >
             Cancelar
           </button>
           <button
-            onClick={() => onAdd(formData)}
+            type="submit"
             className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
           >
             Adicionar
@@ -113,5 +139,7 @@ export default function LancamentoForm({ onAdd, onClose }: LancamentoFormProps) 
         </div>
       </div>
     </div>
+    </form>
   );
 }
+

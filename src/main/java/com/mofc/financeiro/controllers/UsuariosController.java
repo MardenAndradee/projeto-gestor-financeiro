@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,5 +67,11 @@ public class UsuariosController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id){
         this.usuariosService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getUsuarioLogado(){
+        Usuarios usuario = (Usuarios) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(usuario);
     }
 }
