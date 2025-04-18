@@ -20,17 +20,18 @@ export function useAuth() {
       });
 
       if (!response.ok) {
-        throw new Error("Login falhou");
+        // Se a resposta não for OK, tenta extrair a mensagem de erro do JSON
+        const errorData = await response.json(); // Extrai o corpo da resposta
+        throw new Error(errorData.message || "Login falhou");
       }
 
       const data = await response.json();
       localStorage.setItem("token", data.token);
-      //alert("Login realizado com sucesso! Token: " + data.token);
-
       router.push("/lancamentos");
 
     } catch (err) {
-      setError("Usuário ou senha inválidos");
+      // Verifica se o erro tem uma mensagem e a define no estado
+      setError(err instanceof Error ? err.message : "Erro desconhecido");
     }
   };
 
