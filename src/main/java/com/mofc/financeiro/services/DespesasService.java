@@ -40,7 +40,6 @@ public class DespesasService {
     }
 
 
-
     public List<Despesas> getAllDespesas() {
         return despesasRepository.findAll();
     }
@@ -53,7 +52,6 @@ public class DespesasService {
         Despesas despesa = findById(despesas.getIdDespesa());
         return this.despesasRepository.save(despesas);
     }
-
 
 
     @Transactional
