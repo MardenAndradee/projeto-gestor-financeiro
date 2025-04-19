@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,7 @@ public class UsuariosController {
     UsuariosService usuariosService;
 
 
+
     @PostMapping("/usuario")
     public ResponseEntity<Usuarios> saveUsuarios(@RequestBody @Valid UsuariosDTO usuariosDTO){
         var usuarios = new Usuarios();
@@ -36,23 +38,19 @@ public class UsuariosController {
 
 
 
-
     @GetMapping("/usuario")
     public ResponseEntity<List<Usuarios>> getAllUsuarios(){
         return ResponseEntity.status(HttpStatus.OK).body(usuariosService.getAllUsuarios());
     }
 
 
-
-
     @GetMapping("/usuario/{id}")
     public ResponseEntity<Usuarios> findById(@PathVariable Long id){
         Usuarios usuarios = this.usuariosService.findById(id);
         return ResponseEntity.ok().body(usuarios);
+
+
     }
-
-
-
 
     @PutMapping("/usuario/{id}")
     public ResponseEntity<Void> updateUser(@Valid @RequestBody Usuarios user, @PathVariable Long id){
@@ -62,16 +60,17 @@ public class UsuariosController {
     }
 
 
-
     @DeleteMapping("/usuario/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id){
         this.usuariosService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
+
     @GetMapping("/me")
     public ResponseEntity<?> getUsuarioLogado(){
         Usuarios usuario = (Usuarios) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(usuario);
     }
+
 }

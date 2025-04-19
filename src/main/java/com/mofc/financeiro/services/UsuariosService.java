@@ -1,6 +1,7 @@
 package com.mofc.financeiro.services;
 
 import com.mofc.financeiro.entities.Usuarios;
+import com.mofc.financeiro.exceptions.RecursoNaoEncontradoException;
 import com.mofc.financeiro.repositories.UsuariosRepository;
 import com.mofc.financeiro.services.exceptions.ExceptionDelete;
 import com.mofc.financeiro.services.exceptions.ObjectNotFoundException;
@@ -22,17 +23,14 @@ public class UsuariosService implements UserDetailsService {
 
     public Usuarios findById(Long id){
         Optional<Usuarios> user = this.usuariosRepository.findById(id);
-        return user.orElseThrow(() -> new ObjectNotFoundException(
-                "Usuario não encontrado! Faça seu registro"
-        ));
+
+        return user.orElseThrow(() -> new RecursoNaoEncontradoException(
+                "Recurso não encontrado"));
     }
-
-
 
     public List<Usuarios> getAllUsuarios() {
         return usuariosRepository.findAll();
     }
-
 
 
     @Transactional
@@ -77,6 +75,7 @@ public class UsuariosService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return usuariosRepository.findByLogin(username);
+        return usuariosRepository.findByLogin(username).orElseThrow(() -> new UsernameNotFoundException
+                ("Usuario não encontrado"));
     }
 }
