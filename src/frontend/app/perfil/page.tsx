@@ -1,18 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Camera } from "lucide-react";
 
 export default function PerfilPage() {
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    nome: "João Silva",
-    email: "joao@email.com",
-    celular: "(11) 91234-5678",
+    nome: "",
+    email: "",
+    celular: "",
     senha: "",
     foto: null as File | null,
     fotoPreview: "" as string | ArrayBuffer | null,
   });
+
+  // Buscar dados do perfil do usuário ao carregar a página // Felps Gay pu bosta
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("Token JWT não encontrado");
+      return;
+    }
+
+    fetch("http://localhost:8080/usuario/perfil", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Erro ao buscar perfil");
+        const data = await res.json();
+
+        setFormData((prev) => ({
+          ...prev,
+          nome: data.nome || "",
+          email: data.email || "",
+          celular: data.celular || "",
+        }));
+      })
+      .catch((err) => {
+        console.error("Erro ao carregar perfil:", err);
+        alert("Erro ao carregar perfil");
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,7 +68,7 @@ export default function PerfilPage() {
   };
 
   const handleSubmit = () => {
-    console.log("Dados salvos:", formData);
+    console.log("Dados salvos (ainda sem PUT):", formData);
   };
 
   return (
@@ -43,7 +76,6 @@ export default function PerfilPage() {
       <Navbar />
       <div className="max-w-4xl mx-auto p-6">
         <div className="bg-white rounded-xl shadow-md p-6 flex flex-col md:flex-row items-center md:items-start gap-8">
-          
           {/* Foto de perfil */}
           <div className="relative w-32 h-32 md:w-40 md:h-40 shrink-0">
             <div className="rounded-full overflow-hidden border-4 border-green-100 shadow w-full h-full bg-gray-100">
@@ -73,45 +105,50 @@ export default function PerfilPage() {
           {/* Formulário */}
           <div className="flex-1 w-full">
             <h2 className="text-xl font-semibold text-green-700 mb-4">Perfil</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input
-                type="text"
-                name="nome"
-                value={formData.nome}
-                onChange={handleChange}
-                placeholder="Nome"
-                className="px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400 w-full"
-              />
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="E-mail"
-                className="px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400 w-full"
-              />
-              <input
-                type="tel"
-                name="celular"
-                value={formData.celular}
-                onChange={handleChange}
-                placeholder="Celular"
-                className="px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400 w-full"
-              />
-              <input
-                type="password"
-                name="senha"
-                value={formData.senha}
-                onChange={handleChange}
-                placeholder="Nova senha"
-                className="px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400 w-full"
-              />
-            </div>
+            {loading ? (
+              <p className="text-gray-500">Carregando dados do perfil...</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  name="nome"
+                  value={formData.nome}
+                  onChange={handleChange}
+                  placeholder="Nome"
+                  className="px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400 w-full"
+                />
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="E-mail"
+                  className="px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400 w-full"
+                />
+                <input
+                  type="tel"
+                  name="celular"
+                  value={formData.celular}
+                  onChange={handleChange}
+                  placeholder="Celular"
+                  className="px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400 w-full"
+                />
+                <input
+                  type="password"
+                  name="senha"
+                  value={formData.senha}
+                  onChange={handleChange}
+                  placeholder="Nova senha"
+                  className="px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400 w-full"
+                />
+              </div>
+            )}
 
             <div className="flex justify-end mt-6">
               <button
                 onClick={handleSubmit}
-                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+                disabled={loading}
+                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50"
               >
                 Salvar
               </button>

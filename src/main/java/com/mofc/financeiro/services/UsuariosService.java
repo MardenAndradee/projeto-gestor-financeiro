@@ -1,5 +1,6 @@
 package com.mofc.financeiro.services;
 
+import com.mofc.financeiro.dtos.PerfilDTO;
 import com.mofc.financeiro.entities.Usuarios;
 import com.mofc.financeiro.exceptions.RecursoNaoEncontradoException;
 import com.mofc.financeiro.repositories.UsuariosRepository;
@@ -41,7 +42,6 @@ public class UsuariosService implements UserDetailsService {
     }
 
 
-
     @Transactional
     public Usuarios update(Usuarios user){
         Usuarios users = findById(user.getIdUsuario());
@@ -72,10 +72,16 @@ public class UsuariosService implements UserDetailsService {
         }
     }
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return usuariosRepository.findByLogin(username).orElseThrow(() -> new UsernameNotFoundException
                 ("Usuario não encontrado"));
+    }
+
+    public PerfilDTO buscarPerfilUsuarioLogado(String login){
+        Usuarios usuario = (Usuarios) usuariosRepository.findByLogin(login).orElseThrow(()
+                ->  new UsernameNotFoundException("Usuario não encontrado"));
+
+        return new PerfilDTO(usuario.getNome(), usuario.getEmail(), usuario.getCelular());
     }
 }
