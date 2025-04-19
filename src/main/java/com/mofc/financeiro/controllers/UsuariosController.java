@@ -1,5 +1,6 @@
 package com.mofc.financeiro.controllers;
 
+import com.mofc.financeiro.dtos.PerfilDTO;
 import com.mofc.financeiro.dtos.UsuariosDTO;
 import com.mofc.financeiro.entities.Usuarios;
 import com.mofc.financeiro.repositories.UsuariosRepository;
@@ -66,11 +67,20 @@ public class UsuariosController {
         return ResponseEntity.noContent().build();
     }
 
-
     @GetMapping("/me")
     public ResponseEntity<?> getUsuarioLogado(){
         Usuarios usuario = (Usuarios) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(usuario);
+    }
+
+
+    @GetMapping("/usuario/perfil")
+    public ResponseEntity<PerfilDTO> getPerfil(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String login = auth.getName();
+
+        PerfilDTO perfil = usuariosService.buscarPerfilUsuarioLogado(login);
+        return ResponseEntity.ok(perfil);
     }
 
 }
