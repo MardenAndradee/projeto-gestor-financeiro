@@ -1,6 +1,7 @@
 package com.mofc.financeiro.exceptions;
 
 import org.apache.logging.log4j.spi.ObjectThreadContextMap;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,6 +25,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
+
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Object> handleUserNameNotFound(UsernameNotFoundException ex){
         Map<String, Object> body = new LinkedHashMap<>();
@@ -34,6 +36,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGenericException(Exception ex) {
         Map<String, Object> body = new LinkedHashMap<>();
@@ -42,5 +45,16 @@ public class GlobalExceptionHandler {
         body.put("error", "Erro interno do servidor");
         body.put("message", ex.getMessage());
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+    @ExceptionHandler(ValidacacaoException.class)
+    public ResponseEntity<Object> validacaoDadosUsuario(ValidacacaoException ex){
+        Map<String,Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status",HttpStatus.INTERNAL_SERVER_ERROR.value());
+        body.put("error","Erro interno do servidor");
+        body.put("message", ex.getMessage());
+        return new ResponseEntity<>(body,HttpStatus.NOT_FOUND);
     }
 }

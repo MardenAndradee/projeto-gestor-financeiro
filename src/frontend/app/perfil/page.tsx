@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Camera } from "lucide-react";
+import {toast} from "react-toastify";
 
 export default function PerfilPage() {
   const [loading, setLoading] = useState(true);
@@ -15,7 +16,7 @@ export default function PerfilPage() {
     fotoPreview: "" as string | ArrayBuffer | null,
   });
 
-  // Buscar dados do perfil do usuário ao carregar a página // Felps Gay pu bosta
+  // Buscar dados do perfil do usuário ao carregar a página
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -67,8 +68,39 @@ export default function PerfilPage() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log("Dados salvos (ainda sem PUT):", formData);
+  const handleSubmit = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Token não encontrado. Faça login novamente.");
+      return;
+    }
+    
+
+    try {
+      const response = await fetch("http://localhost:8080/usuario/perfil", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          nome: formData.nome,
+          email: formData.email,
+          celular: formData.celular,
+        }),
+      });
+
+
+
+      if (!response.ok) {
+        throw new Error("Erro ao atualizar perfil");
+      }
+      const data = await response.json();
+      toast.success(data.mensagem);
+
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha ao atualizar dados")
+    }
   };
 
   return (
@@ -140,6 +172,7 @@ export default function PerfilPage() {
                   onChange={handleChange}
                   placeholder="Nova senha"
                   className="px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400 w-full"
+                  disabled // desativado por enquanto
                 />
               </div>
             )}
@@ -159,3 +192,4 @@ export default function PerfilPage() {
     </div>
   );
 }
+

@@ -1,5 +1,7 @@
 package com.mofc.financeiro.controllers;
 
+import com.mofc.financeiro.dtos.LoginSucessoDTO;
+import com.mofc.financeiro.dtos.PerfilAtualizarDTO;
 import com.mofc.financeiro.dtos.PerfilDTO;
 import com.mofc.financeiro.dtos.UsuariosDTO;
 import com.mofc.financeiro.entities.Usuarios;
@@ -82,5 +84,18 @@ public class UsuariosController {
         PerfilDTO perfil = usuariosService.buscarPerfilUsuarioLogado(login);
         return ResponseEntity.ok(perfil);
     }
+
+
+    @PutMapping("usuario/perfil")
+    public ResponseEntity<LoginSucessoDTO> atualizarPerfil(@RequestBody PerfilAtualizarDTO dto){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String login = auth.getName();
+
+        LoginSucessoDTO resposta = usuariosService.atualizarPerfil(login,dto);
+
+        return ResponseEntity.ok(resposta);
+    }
+
+
 
 }
