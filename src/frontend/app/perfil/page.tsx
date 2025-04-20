@@ -39,6 +39,7 @@ export default function PerfilPage() {
           nome: data.nome || "",
           email: data.email || "",
           celular: data.celular || "",
+          senha: data.senha || ""
         }));
       })
       .catch((err) => {
@@ -87,6 +88,7 @@ export default function PerfilPage() {
           nome: formData.nome,
           email: formData.email,
           celular: formData.celular,
+          senha: formData.senha
         }),
       });
 
@@ -173,7 +175,6 @@ export default function PerfilPage() {
                   onChange={handleChange}
                   placeholder="Nova senha"
                   className="px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400 w-full"
-                  disabled // desativado por enquanto
                 />
               </div>
             )}

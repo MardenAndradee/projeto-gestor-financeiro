@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,9 @@ public class UsuariosService implements UserDetailsService {
 
     @Autowired
     private Validator validator;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public Usuarios findById(Long id){
         Optional<Usuarios> user = this.usuariosRepository.findById(id);
@@ -96,13 +100,18 @@ public class UsuariosService implements UserDetailsService {
 
 
     @Transactional
-    public LoginSucessoDTO atualizarPerfil(String login, PerfilAtualizarDTO perfilDTO){
+    public LoginSucessoDTO atualizarPerfil(String login, PerfilAtualizarDTO perfilAtualizarDTO){
         Usuarios usuario = (Usuarios) usuariosRepository.findByLogin(login)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario não encontrado"));
         try {
-            if (perfilDTO.nome() != null) usuario.setNome(perfilDTO.nome());
-            if (perfilDTO.email() != null) usuario.setEmail(perfilDTO.email());
-            if (perfilDTO.celular() != null) usuario.setCelular(perfilDTO.celular());
+            if (perfilAtualizarDTO.nome() != null) usuario.setNome(perfilAtualizarDTO.nome());
+            if (perfilAtualizarDTO.email() != null) usuario.setEmail(perfilAtualizarDTO.email());
+            if (perfilAtualizarDTO.celular() != null) usuario.setCelular(perfilAtualizarDTO.celular());
+
+            if (perfilAtualizarDTO.senha() != null && !perfilAtualizarDTO.senha().isBlank()){
+                String senhaCriptografada = passwordEncoder.encode(perfilAtualizarDTO.senha());
+                usuario.setSenha(senhaCriptografada);
+            }
 
             Set<ConstraintViolation<Usuarios>> violations = validator.validate(usuario);
 
