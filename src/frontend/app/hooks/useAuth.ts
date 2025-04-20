@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
+import { toast } from "react-toastify"
 
 export function useAuth() {
   const [login, setLogin] = useState("");
@@ -30,8 +31,8 @@ export function useAuth() {
       router.push("/lancamentos");
 
     } catch (err) {
-      // Verifica se o erro tem uma mensagem e a define no estado
-      setError(err instanceof Error ? err.message : "Erro desconhecido");
+      toast.error(err instanceof Error ? err.message : "Erro inesperado");
+
     }
   };
 

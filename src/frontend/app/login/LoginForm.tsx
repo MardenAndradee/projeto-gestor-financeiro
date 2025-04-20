@@ -33,12 +33,6 @@ export default function LoginForm() {
         />
       </div>
 
-      {/* Mensagem de erro - aparece apenas quando há erro */}
-      {error && (
-        <div className="text-red-600 text-sm py-2 px-3">
-          {error}
-        </div>
-      )}
 
       <div className="flex justify-between items-center text-sm">
         <a href="#" className="text-green-600 hover:underline">
