@@ -93,7 +93,8 @@ export default function PerfilPage() {
 
 
       if (!response.ok) {
-        throw new Error("Erro ao atualizar perfil");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Erro ao atualizar perfil");
       }
       const data = await response.json();
       toast.success(data.mensagem);
