@@ -102,13 +102,6 @@ export default function CadastroForm() {
       >
         Cadastrar
       </button>
-
-      <div className="mt-4 text-center">
-        <span className="text-sm text-gray-700">Já tem uma conta?</span>
-        <a href="/login" className="text-green-600 hover:underline ml-1">
-          Faça Login
-        </a>
-      </div>
     </form>
   );
 }
