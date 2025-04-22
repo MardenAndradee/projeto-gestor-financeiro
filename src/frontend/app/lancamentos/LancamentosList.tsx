@@ -34,7 +34,7 @@ export default function LancamentoList() {
               <div>
                 <p className="text-gray-800 font-medium">{item.descricao}</p>
                 <span className="text-gray-500 text-sm">
-                  {new Date(item.data).toLocaleDateString("pt-BR")} - {item.categoria?.nome} | {item.formaPagamento}{" "} {item.qtdParcelas > 1 ? ` | ${item.qtdParcelas}x` : ""}
+                  {new Date(item.dataParcela).toLocaleDateString("pt-BR")} - {item.categoria} | {item.formaPagamento}{" "} {item.qtdParcelas > 1 ? ` |  ${item.nParcela} / ${item.qtdParcelas}` : ""}
                 </span>
               </div>
               <span className="text-green-600 font-semibold">R$ {item.valor.toFixed(2)}</span>

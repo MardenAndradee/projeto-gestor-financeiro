@@ -50,7 +50,7 @@ export function useLancamentos() {
       const idUsuario = await buscarUsuario();
 
 
-      const response = await fetch(`http://localhost:8080/despesa?mes=4&idUsuario=${idUsuario}`, {
+      const response = await fetch(`http://localhost:8080/parcelas/filtrar?mes=4&idUsuario=${idUsuario}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -78,9 +78,6 @@ export function useLancamentos() {
 
         const idUsuario = await buscarUsuario();
 
-
-
-        alert("Fazer post");
 
       const response = await fetch("http://localhost:8080/despesa", {
         method: "POST",
