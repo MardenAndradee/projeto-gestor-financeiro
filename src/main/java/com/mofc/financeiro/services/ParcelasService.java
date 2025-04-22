@@ -1,5 +1,6 @@
 package com.mofc.financeiro.services;
 
+import com.mofc.financeiro.dtos.ParcelasDTO;
 import com.mofc.financeiro.entities.Parcelas;
 import com.mofc.financeiro.repositories.ParcelasRepository;
 import com.mofc.financeiro.services.exceptions.ExceptionDelete;
@@ -51,19 +52,13 @@ public class ParcelasService {
         }
     }
 
-    public List<Parcelas> filtrarParcelas(Integer mes, Long categoriaId, Long idUsuario){
-        if (mes != null && categoriaId != null) {
-            return parcelasRepository.findByMesAndCategoria(mes, categoriaId);
-        } else if (mes != null) {
-            return parcelasRepository.findByMes(mes);
-        } else if (categoriaId != null) {
-            return parcelasRepository.findByCategoria(categoriaId);
-        } else if(idUsuario !=null && mes!=null && categoriaId !=null){
+    public List<ParcelasDTO> filtrarParcelas(Integer mes, Long categoriaId, Long idUsuario){
+        if (idUsuario !=null && mes!=null && categoriaId !=null){
             return parcelasRepository.findByMesAndCategoriaAndUsuario(mes,categoriaId,idUsuario);
         } else if(idUsuario !=null && mes!=null){
             return parcelasRepository.findByMesAndUsuario(mes,idUsuario);
         }
 
-        return parcelasRepository.findAll();
+        return parcelasRepository.findAllParcelasDTO();
     }
 }

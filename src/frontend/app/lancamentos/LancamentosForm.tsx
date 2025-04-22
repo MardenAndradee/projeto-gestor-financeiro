@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useLancamentos } from "../hooks/useLancamentos";
 
-export default function LancamentosForm(){
+export default function LancamentosForm({onAdd,onClose}){
   const{
       descricao, setdescricao,
       valor, setValor,
@@ -23,6 +23,7 @@ export default function LancamentosForm(){
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) =>{
     e.preventDefault(); 
     await handleLancamento(); 
+    onClose();
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -126,6 +127,7 @@ export default function LancamentosForm(){
         
         <div className="flex justify-end space-x-2">
           <button
+          onClick={onClose}
             className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
           >
             Cancelar

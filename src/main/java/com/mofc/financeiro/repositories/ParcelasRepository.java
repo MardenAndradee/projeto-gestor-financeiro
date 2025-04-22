@@ -1,5 +1,6 @@
 package com.mofc.financeiro.repositories;
 
+import com.mofc.financeiro.dtos.ParcelasDTO;
 import com.mofc.financeiro.entities.Parcelas;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,21 +19,32 @@ public interface ParcelasRepository extends JpaRepository<Parcelas, Long> {
     @Query("DELETE FROM Parcelas p WHERE p.despesa.id = :despesaId")
     void deleteByDespesaId(@Param("despesaId") Long despesaId);
 
-    @Query("SELECT p FROM Parcelas p WHERE EXTRACT(MONTH FROM p.dataParcela) = :mes")
-    List<Parcelas> findByMes(@Param("mes") int mes);
+    //@Query("SELECT p FROM Parcelas p WHERE EXTRACT(MONTH FROM p.dataParcela) = :mes AND p.despesa.usuario.id = :usuarioId")
+    //List<Parcelas> findByMesAndUsuario(@Param("mes") int mes, @Param("usuarioId") Long usuarioId);
 
-    @Query("SELECT p FROM Parcelas p WHERE p.despesa.categoria.id = :categoriaId")
-    List<Parcelas> findByCategoria(@Param("categoriaId") Long categoriaId);
+    @Query("select new com.mofc.financeiro.dtos.ParcelasDTO(" +
+            "d.descricao, p.dataParcela, d.formaPagamento, c.categoria, p.nParcela, d.qtdParcelas, p.valor) " +
+            "from Parcelas p " +
+            "join p.despesa d " +
+            "join d.categoria c")
+    List<ParcelasDTO> findAllParcelasDTO();
 
-    @Query("SELECT p FROM Parcelas p WHERE EXTRACT(MONTH FROM p.dataParcela) = :mes AND p.despesa.categoria.id = :categoriaId")
-    List<Parcelas> findByMesAndCategoria(@Param("mes") int mes, @Param("categoriaId") Long categoriaId);
+    @Query("select new com.mofc.financeiro.dtos.ParcelasDTO(" +
+            "d.descricao, p.dataParcela, d.formaPagamento, c.categoria, p.nParcela, d.qtdParcelas, p.valor) " +
+            "from Parcelas p " +
+            "join p.despesa d " +
+            "join d.categoria c " +
+            "where EXTRACT(MONTH FROM p.dataParcela) = :mes " +
+            "and c.id = :categoriaId and d.usuario.id = :usuarioId")
+    List<ParcelasDTO> findByMesAndCategoriaAndUsuario(@Param("mes") int mes, @Param("categoriaId") Long categoriaId, @Param("usuarioId") Long usuarioId);
 
-    @Query("SELECT p FROM Parcelas p WHERE EXTRACT(MONTH FROM p.dataParcela) = :mes AND p.despesa.usuario.id = :usuarioId")
-    List<Parcelas> findByMesAndUsuario(@Param("mes") int mes, @Param("usuarioId") Long usuarioId);
 
-    @Query("SELECT p FROM Parcelas p WHERE p.despesa.categoria.id = :categoriaId AND p.despesa.usuario.id = :usuarioId")
-    List<Parcelas> findByCategoriaAndUsuario(@Param("categoriaId") Long categoriaId, @Param("usuarioId") Long usuarioId);
+    @Query("select new com.mofc.financeiro.dtos.ParcelasDTO(" +
+            "d.descricao, p.dataParcela, d.formaPagamento, c.categoria, p.nParcela, d.qtdParcelas, p.valor) " +
+            "from Parcelas p " +
+            "join p.despesa d " +
+            "join d.categoria c " +
+            "where EXTRACT(MONTH FROM p.dataParcela) = :mes and d.usuario.id = :usuarioId")
+    List<ParcelasDTO> findByMesAndUsuario(@Param("mes") int mes, @Param("usuarioId") Long usuarioId);
 
-    @Query("SELECT p FROM Parcelas p WHERE EXTRACT(MONTH FROM p.dataParcela) = :mes AND p.despesa.categoria.id = :categoriaId AND p.despesa.usuario.id = :usuarioId")
-    List<Parcelas> findByMesAndCategoriaAndUsuario(@Param("mes") int mes, @Param("categoriaId") Long categoriaId, @Param("usuarioId") Long usuarioId);
 }
