@@ -40,7 +40,7 @@ public class SecurityConfigurations {
                         //.requestMatchers(HttpMethod.POST,"/usuario").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST,"/usuario").permitAll()
                         .requestMatchers(HttpMethod.DELETE,"/usuario").permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/auth/**")).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
