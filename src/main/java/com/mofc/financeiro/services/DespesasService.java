@@ -2,14 +2,11 @@ package com.mofc.financeiro.services;
 
 import com.mofc.financeiro.entities.Despesas;
 import com.mofc.financeiro.entities.Parcelas;
-import com.mofc.financeiro.entities.Usuarios;
 import com.mofc.financeiro.repositories.CategoriasRepository;
 import com.mofc.financeiro.repositories.DespesasRepository;
 import com.mofc.financeiro.repositories.ParcelasRepository;
 import com.mofc.financeiro.repositories.UsuariosRepository;
-import com.mofc.financeiro.services.exceptions.ExceptionDelete;
 import com.mofc.financeiro.services.exceptions.ObjectNotFoundException;
-import jakarta.transaction.TransactionScoped;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,10 +37,9 @@ public class DespesasService {
     }
 
 
-    public List<Despesas> getAllDespesas() {
-        return despesasRepository.findAll();
+    public List<Despesas> getAllDespesas(String login){
+        return despesasRepository.findAllByUsuarioLogin(login);
     }
-
 
 
 
@@ -54,13 +50,13 @@ public class DespesasService {
     }
 
 
+
     @Transactional
     public void deletarDespesaComParcelas(Long idDespesa) {
         parcelasRepository.deleteByDespesaId(idDespesa);
 
         despesasRepository.deleteById(idDespesa);
     }
-
 
 
     @Transactional
