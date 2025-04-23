@@ -87,11 +87,13 @@ public class UsuariosService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return usuariosRepository.findByLogin(username);
+        return usuariosRepository.findByLogin(username).orElseThrow(() -> new UsernameNotFoundException
+                ("Usuario não encontrado"));
     }
 
     public PerfilDTO buscarPerfilUsuarioLogado(String login){
-        Usuarios usuario = (Usuarios) usuariosRepository.findByLogin(login);
+        Usuarios usuario = (Usuarios) usuariosRepository.findByLogin(login).orElseThrow(()
+                ->  new UsernameNotFoundException("Usuario não encontrado"));
 
         return new PerfilDTO(usuario.getNome(), usuario.getEmail(), usuario.getCelular());
     }
@@ -99,7 +101,8 @@ public class UsuariosService implements UserDetailsService {
 
     @Transactional
     public LoginSucessoDTO atualizarPerfil(String login, PerfilAtualizarDTO perfilAtualizarDTO){
-        Usuarios usuario = (Usuarios) usuariosRepository.findByLogin(login);
+        Usuarios usuario = (Usuarios) usuariosRepository.findByLogin(login)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario não encontrado"));
         try {
             if (perfilAtualizarDTO.nome() != null) usuario.setNome(perfilAtualizarDTO.nome());
             if (perfilAtualizarDTO.email() != null) usuario.setEmail(perfilAtualizarDTO.email());
