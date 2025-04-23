@@ -4,22 +4,28 @@ import com.mofc.financeiro.dtos.DespesasDTO;
 import com.mofc.financeiro.entities.Categorias;
 import com.mofc.financeiro.entities.Despesas;
 import com.mofc.financeiro.entities.Usuarios;
+import com.mofc.financeiro.excel.DespesasExcelExportar;
 import com.mofc.financeiro.repositories.CategoriasRepository;
 import com.mofc.financeiro.repositories.DespesasRepository;
 import com.mofc.financeiro.repositories.UsuariosRepository;
 import com.mofc.financeiro.services.DespesasService;
 import com.mofc.financeiro.services.UsuariosService;
 import com.mofc.financeiro.services.CategoriasService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class DespesasController {
@@ -58,7 +64,11 @@ public class DespesasController {
 
     @GetMapping("/despesa")
     public ResponseEntity<List<Despesas>>getAllDespesas(){
-        return ResponseEntity.status(HttpStatus.OK).body(despesasService.getAllDespesas());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String login = auth.getName();
+
+        return ResponseEntity.status(HttpStatus.OK).body(despesasService.getAllDespesas(login));
     }
 
 
@@ -85,4 +95,25 @@ public class DespesasController {
         this.despesasService.deletarDespesaComParcelas(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("despesa/export/excel")
+    public void exportarExcel(HttpServletResponse response) throws IOException{
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=despesas_" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey,headerValue);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String login = auth.getName();
+
+        List<Despesas> listDespesas = despesasService.getAllDespesas(login);
+
+        DespesasExcelExportar excelExportar = new DespesasExcelExportar(listDespesas);
+
+        excelExportar.export(response);
+    }
+
 }
