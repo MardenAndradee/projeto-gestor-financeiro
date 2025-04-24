@@ -4,6 +4,7 @@ import com.mofc.financeiro.dtos.AuthenticationDTO;
 import com.mofc.financeiro.dtos.LoginReponseDTO;
 import com.mofc.financeiro.dtos.RegisterDTO;
 import com.mofc.financeiro.entities.Usuarios;
+import com.mofc.financeiro.exceptions.RegistrarUsuarioException;
 import com.mofc.financeiro.infra.security.TokenService;
 import com.mofc.financeiro.repositories.UsuariosRepository;
 import jakarta.validation.Valid;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,8 +42,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterDTO data){
-        if(this.usuariosRepository.findByLogin(data.login()).isPresent()) return ResponseEntity.badRequest().build();
+    public ResponseEntity register(@RequestBody @Valid RegisterDTO data)  {
+        if(this.usuariosRepository.findByLogin(data.login()).isPresent())
+            throw new RegistrarUsuarioException("Dados invalidos");
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
         Usuarios newUsuario = new Usuarios(data.nome(), data.email(), data.celular(),

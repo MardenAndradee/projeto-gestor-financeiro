@@ -22,36 +22,30 @@ public class Usuarios implements Serializable, UserDetails {
 
 
     @Column(name = "nome",length = 25,nullable = false,unique = true)
-    @NotNull
-    @NotEmpty
+    @NotBlank
     @Size(min = 4, max = 25)
     private String nome;
 
     @Column(name = "email",length = 30,nullable = false,unique = true)
-    @NotNull
-    @NotEmpty
+    @NotBlank
     @Size(min = 4, max = 30)
     private String email;
 
 
     @Column(name = "celular", nullable = false, unique = true)
-    @NotNull
-    @NotEmpty
+    @NotBlank
     @Size(min = 8, max = 12)
     private String celular;
 
 
     @Column(name = "login",length = 15,nullable = false,unique = true)
-    @NotNull
-    @NotEmpty
+    @NotBlank
     @Size(min = 4, max = 15)
     private String login;
 
 
     @Column(name = "senha",nullable = false,unique = false)
-    @NotNull
-    @NotEmpty
-
+    @NotBlank
     private String senha;
 
 
