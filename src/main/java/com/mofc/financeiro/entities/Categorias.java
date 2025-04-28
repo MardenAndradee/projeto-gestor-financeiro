@@ -13,7 +13,7 @@ public class Categorias implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long idCategoria;
     private String categoria;
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name="usuario_id")
     private Usuarios usuario;
 
