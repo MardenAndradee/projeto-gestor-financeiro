@@ -39,8 +39,10 @@ public class CategoriasController {
     }
 
     @GetMapping("/categoria")
-    public ResponseEntity<List<Categorias>> getAllCategorias(){
-        return ResponseEntity.status(HttpStatus.OK).body(categoriasService.getAllCategorias());
+    public ResponseEntity<List<Categorias>> getAllCategorias(@RequestParam(required = false) Long idUsuario){
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(categoriasService.getAllCategorias(idUsuario));
     }
 
     @GetMapping("/categoria/{id}")

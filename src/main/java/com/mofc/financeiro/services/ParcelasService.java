@@ -7,8 +7,10 @@ import com.mofc.financeiro.services.exceptions.ExceptionDelete;
 import com.mofc.financeiro.services.exceptions.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,13 +54,12 @@ public class ParcelasService {
         }
     }
 
-    public List<ParcelasDTO> filtrarParcelas(Integer mes, Long categoriaId, Long idUsuario){
-        if (idUsuario !=null && mes!=null && categoriaId !=null){
-            return parcelasRepository.findByMesAndCategoriaAndUsuario(mes,categoriaId,idUsuario);
-        } else if(idUsuario !=null && mes!=null){
-            return parcelasRepository.findByMesAndUsuario(mes,idUsuario);
+    public List<ParcelasDTO> filtrarParcelas(LocalDate dataInicial, LocalDate dataFinal, Long categoriaId, Long idUsuario){
+        if (categoriaId != null){
+            return parcelasRepository.findByMesAndCategoriaAndUsuario(dataInicial, dataFinal,categoriaId,idUsuario);
+        } else {
+            return parcelasRepository.findByMesAndUsuario(dataInicial, dataFinal, idUsuario);
         }
 
-        return parcelasRepository.findAllParcelasDTO();
     }
 }
