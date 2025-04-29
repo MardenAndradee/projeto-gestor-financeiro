@@ -1,6 +1,6 @@
 "use client"
 
-import React,{useEffect, useState} from "react";
+import React, { useEffect } from "react";
 import { useLancamentos } from "../hooks/useLancamentos";
 
 type Lancamento = {
@@ -12,11 +12,9 @@ type Lancamento = {
   data: string;
   formaPagamento: string;
   qtdParcelas: number;
-
 };
 
-export default function LancamentoList() {
-
+export default function LancamentoList({ onAddLancamento }: { onAddLancamento: () => void }) {
   const { lancamentos, handleGetLancamentos } = useLancamentos();
 
   useEffect(() => {
@@ -53,19 +51,27 @@ export default function LancamentoList() {
       alert("Erro ao exportar o Excel.");
     }
   };
-  
+
   return (
-      <div className="bg-white p-6 rounded-xl shadow-lg">
+    <div className="bg-white p-6 rounded-xl shadow-lg">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold text-gray-800">Meus Lançamentos</h2>
-        <button
-          onClick={handleExportarExcel}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-        >
-          Exportar Excel
-        </button>
+        <div className="flex space-x-2">
+          <button
+            onClick={onAddLancamento}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+          >
+            Adicionar
+          </button>
+          <button
+            onClick={handleExportarExcel}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            Exportar Excel
+          </button>
+        </div>
       </div>
-      
+
       {lancamentos.length === 0 ? (
         <p className="text-gray-500">Nenhum lançamento adicionado.</p>
       ) : (
@@ -75,7 +81,8 @@ export default function LancamentoList() {
               <div>
                 <p className="text-gray-800 font-medium">{item.descricao}</p>
                 <span className="text-gray-500 text-sm">
-                  {new Date(item.dataParcela).toLocaleDateString("pt-BR")} - {item.categoria} | {item.formaPagamento}{" "} {item.qtdParcelas > 1 ? ` |  ${item.nParcela} / ${item.qtdParcelas}` : ""}
+                  {new Date(item.dataParcela).toLocaleDateString("pt-BR")} - {item.categoria} | {item.formaPagamento}{" "}
+                  {item.qtdParcelas > 1 ? ` |  ${item.nParcela} / ${item.qtdParcelas}` : ""}
                 </span>
               </div>
               <span className="text-green-600 font-semibold">R$ {item.valor.toFixed(2)}</span>
