@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,12 +51,13 @@ public class ParcelasController {
 
     @GetMapping("parcelas/filtrar")
     public ResponseEntity<List<ParcelasDTO>>filtrarParcelas(
-            @RequestParam(required = false)Integer mes,
+            @RequestParam(required = true)LocalDate dataInicial,
+            @RequestParam(required = true)LocalDate dataFinal,
             @RequestParam(required = false) Optional<Long> categoriaId,
             @RequestParam(required = true) Optional<Long> idUsuario){
 
 
-        List<ParcelasDTO> parcelas = parcelasService.filtrarParcelas(mes, categoriaId.orElse(null),idUsuario.orElse(null));
+        List<ParcelasDTO> parcelas = parcelasService.filtrarParcelas(dataInicial, dataFinal, categoriaId.orElse(null),idUsuario.orElse(null));
         return ResponseEntity.ok(parcelas);
 
     }

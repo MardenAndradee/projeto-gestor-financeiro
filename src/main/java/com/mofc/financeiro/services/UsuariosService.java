@@ -6,6 +6,7 @@ import com.mofc.financeiro.dtos.PerfilAtualizarDTO;
 import com.mofc.financeiro.dtos.PerfilDTO;
 import com.mofc.financeiro.entities.Usuarios;
 import com.mofc.financeiro.exceptions.RecursoNaoEncontradoException;
+import com.mofc.financeiro.exceptions.RegistrarUsuarioException;
 import com.mofc.financeiro.exceptions.ValidacacaoException;
 import com.mofc.financeiro.repositories.UsuariosRepository;
 import com.mofc.financeiro.services.exceptions.ExceptionDelete;
@@ -87,11 +88,13 @@ public class UsuariosService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return usuariosRepository.findByLogin(username);
+        return usuariosRepository.findByLogin(username).orElseThrow(() -> new UsernameNotFoundException
+                ("Usuario não encontrado"));
     }
 
     public PerfilDTO buscarPerfilUsuarioLogado(String login){
-        Usuarios usuario = (Usuarios) usuariosRepository.findByLogin(login);
+        Usuarios usuario = (Usuarios) usuariosRepository.findByLogin(login).orElseThrow(()
+                ->  new UsernameNotFoundException("Usuario não encontrado"));
 
         return new PerfilDTO(usuario.getNome(), usuario.getEmail(), usuario.getCelular());
     }
@@ -99,7 +102,8 @@ public class UsuariosService implements UserDetailsService {
 
     @Transactional
     public LoginSucessoDTO atualizarPerfil(String login, PerfilAtualizarDTO perfilAtualizarDTO){
-        Usuarios usuario = (Usuarios) usuariosRepository.findByLogin(login);
+        Usuarios usuario = (Usuarios) usuariosRepository.findByLogin(login)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario não encontrado"));
         try {
             if (perfilAtualizarDTO.nome() != null) usuario.setNome(perfilAtualizarDTO.nome());
             if (perfilAtualizarDTO.email() != null) usuario.setEmail(perfilAtualizarDTO.email());
@@ -120,8 +124,8 @@ public class UsuariosService implements UserDetailsService {
             usuariosRepository.save(usuario);
             return new LoginSucessoDTO ("Dados alterados com sucesso");
 
-        }catch (RecursoNaoEncontradoException ex){
-            throw new RecursoNaoEncontradoException("Caracteres invalidos");
+        }catch (ValidacacaoException ex){
+            throw new ValidacacaoException("Caracteres invalidos");
         }
     }
 }

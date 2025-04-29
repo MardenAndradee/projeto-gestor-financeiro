@@ -24,8 +24,8 @@ public class CategoriasService {
         ));
     }
 
-    public List<Categorias> getAllCategorias(){
-        return categoriasRepository.findAll();
+    public List<Categorias> getAllCategorias(Long idUsuario){
+        return categoriasRepository.findByUsuarioIdUsuario(idUsuario);
     }
 
     @Transactional
