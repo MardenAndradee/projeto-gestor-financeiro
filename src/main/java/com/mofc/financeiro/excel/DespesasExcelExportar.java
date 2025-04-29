@@ -62,7 +62,6 @@ public class DespesasExcelExportar {
         } else {
             cell.setCellValue("");
         }
-
         cell.setCellStyle(style);
     }
 

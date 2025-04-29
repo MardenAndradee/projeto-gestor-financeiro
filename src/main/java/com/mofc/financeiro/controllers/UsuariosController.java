@@ -87,7 +87,7 @@ public class UsuariosController {
 
 
     @PutMapping("usuario/perfil")
-    public ResponseEntity<LoginSucessoDTO> atualizarPerfil(@RequestBody PerfilAtualizarDTO dto){
+    public ResponseEntity<LoginSucessoDTO> atualizarPerfil(@RequestBody @Valid PerfilAtualizarDTO dto){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String login = auth.getName();
 

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -23,28 +24,34 @@ public interface ParcelasRepository extends JpaRepository<Parcelas, Long> {
     //List<Parcelas> findByMesAndUsuario(@Param("mes") int mes, @Param("usuarioId") Long usuarioId);
 
     @Query("select new com.mofc.financeiro.dtos.ParcelasDTO(" +
-            "d.descricao, p.dataParcela, d.formaPagamento, c.categoria, p.nParcela, d.qtdParcelas, p.valor) " +
+            "p.idParcela, d.descricao, p.dataParcela, d.formaPagamento, c.categoria, p.nParcela, d.qtdParcelas, p.valor) " +
             "from Parcelas p " +
             "join p.despesa d " +
             "join d.categoria c")
     List<ParcelasDTO> findAllParcelasDTO();
 
     @Query("select new com.mofc.financeiro.dtos.ParcelasDTO(" +
-            "d.descricao, p.dataParcela, d.formaPagamento, c.categoria, p.nParcela, d.qtdParcelas, p.valor) " +
+            "p.idParcela, d.descricao, p.dataParcela, d.formaPagamento, c.categoria, p.nParcela, d.qtdParcelas, p.valor) " +
             "from Parcelas p " +
             "join p.despesa d " +
             "join d.categoria c " +
-            "where EXTRACT(MONTH FROM p.dataParcela) = :mes " +
-            "and c.id = :categoriaId and d.usuario.id = :usuarioId")
-    List<ParcelasDTO> findByMesAndCategoriaAndUsuario(@Param("mes") int mes, @Param("categoriaId") Long categoriaId, @Param("usuarioId") Long usuarioId);
+            "where p.dataParcela >= :dataInicial and p.dataParcela <= :dataFinal " +
+            "and c.id = :categoriaId " +
+            "and d.usuario.id = :usuarioId")
+    List<ParcelasDTO> findByMesAndCategoriaAndUsuario(@Param("dataInicial")LocalDate dataInicial,
+                                                      @Param("dataFinal") LocalDate dataFinal,
+                                                      @Param("categoriaId") Long categoriaId,
+                                                      @Param("usuarioId") Long usuarioId);
 
 
     @Query("select new com.mofc.financeiro.dtos.ParcelasDTO(" +
-            "d.descricao, p.dataParcela, d.formaPagamento, c.categoria, p.nParcela, d.qtdParcelas, p.valor) " +
+            "p.idParcela, d.descricao, p.dataParcela, d.formaPagamento, c.categoria, p.nParcela, d.qtdParcelas, p.valor) " +
             "from Parcelas p " +
             "join p.despesa d " +
             "join d.categoria c " +
-            "where EXTRACT(MONTH FROM p.dataParcela) = :mes and d.usuario.id = :usuarioId")
-    List<ParcelasDTO> findByMesAndUsuario(@Param("mes") int mes, @Param("usuarioId") Long usuarioId);
+            "where p.dataParcela >= :dataInicial and p.dataParcela <= :dataFinal and d.usuario.id = :usuarioId")
+    List<ParcelasDTO> findByMesAndUsuario(@Param("dataInicial")LocalDate dataInicial,
+                                          @Param("dataFinal") LocalDate dataFinal,
+                                          @Param("usuarioId") Long usuarioId);
 
 }
