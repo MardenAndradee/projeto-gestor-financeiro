@@ -1,14 +1,23 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, HelpCircle, Menu, X } from "lucide-react";
+import { Bell, HelpCircle, Menu, X, LogOut } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from 'next/navigation';
+
 
 export default function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const router = useRouter();
+
+function handleLogout() {
+  localStorage.removeItem("token");
+  router.push("/login");
+}
+  
 
   return (
     <>
@@ -51,6 +60,9 @@ export default function Navbar() {
               </div>
             )}
           </div>
+          <button onClick={handleLogout} title="Sair" className="p-2 hover:text-red-500 transition-colors">
+            <LogOut size={22} />
+          </button>
         </div>
 
         <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2 text-gray-600">

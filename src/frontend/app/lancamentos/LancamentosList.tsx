@@ -1,7 +1,8 @@
 "use client"
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLancamentos } from "../hooks/useLancamentos";
+import LancamentoForm from "./LancamentosForm";
 
 type Lancamento = {
   descricao: string;
@@ -14,12 +15,20 @@ type Lancamento = {
   qtdParcelas: number;
 };
 
-export default function LancamentoList({ onAddLancamento }: { onAddLancamento: () => void }) {
-  const { lancamentos, handleGetLancamentos } = useLancamentos();
+type Filtros = {
+  dataInicio: string;
+  dataFim: string;
+  categoria: string;
+};
+
+export default function LancamentoList({ onAddLancamento, filtros }: { onAddLancamento: () => void; filtros: Filtros; }) {
+  const { lancamentos, handleGetLancamentos,handleDeleteLancamento,handleEditLancamento } = useLancamentos();
+  const [showForm, setShowForm] = useState(false);
+
 
   useEffect(() => {
-    handleGetLancamentos();
-  }, []);
+    handleGetLancamentos(filtros);
+  }, [filtros]);
 
   const handleExportarExcel = async () => {
     try {
@@ -58,7 +67,7 @@ export default function LancamentoList({ onAddLancamento }: { onAddLancamento: (
         <h2 className="text-xl font-bold text-gray-800">Meus Lançamentos</h2>
         <div className="flex space-x-2">
           <button
-            onClick={onAddLancamento}
+            onClick={() => setShowForm(true)}
             className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
           >
             Adicionar
@@ -72,24 +81,27 @@ export default function LancamentoList({ onAddLancamento }: { onAddLancamento: (
         </div>
       </div>
 
-      {lancamentos.length === 0 ? (
-        <p className="text-gray-500">Nenhum lançamento adicionado.</p>
-      ) : (
-        <ul className="space-y-3">
-          {lancamentos.map((item: any, index: number) => (
-            <li key={index} className="p-4 border-b border-gray-200 flex justify-between">
-              <div>
-                <p className="text-gray-800 font-medium">{item.descricao}</p>
-                <span className="text-gray-500 text-sm">
-                  {new Date(item.dataParcela).toLocaleDateString("pt-BR")} - {item.categoria} | {item.formaPagamento}{" "}
-                  {item.qtdParcelas > 1 ? ` |  ${item.nParcela} / ${item.qtdParcelas}` : ""}
-                </span>
-              </div>
-              <span className="text-green-600 font-semibold">R$ {item.valor.toFixed(2)}</span>
-            </li>
-          ))}
-        </ul>
-      )}
+      {Array.isArray(lancamentos) && lancamentos.length === 0 ? (
+  <p className="text-gray-500">Nenhum lançamento adicionado.</p>
+) : Array.isArray(lancamentos) ? (
+  <ul className="space-y-3">
+    {lancamentos.map((item, index) => (
+      <li key={index} className="p-4 border-b border-gray-200 flex justify-between">
+        <div>
+          <p className="text-gray-800 font-medium">{item.descricao}</p>
+          <span className="text-gray-500 text-sm">
+            {new Date(item.dataParcela).toLocaleDateString("pt-BR")} - {item.categoria} | {item.formaPagamento}{" "}
+            {item.qtdParcelas > 1 ? ` |  ${item.nParcela} / ${item.qtdParcelas}` : ""}
+          </span>
+        </div>
+        <span className="text-green-600 font-semibold">R$ {item.valor.toFixed(2)}</span>
+      </li>
+    ))}
+  </ul>
+) : (
+  <p className="text-red-500">Nenhum lançamento cadastrado.</p>
+)}
+      {showForm && <LancamentoForm onAdd={() => setShowForm(true)} onClose={() => setShowForm(false)} />}
     </div>
   );
 }
