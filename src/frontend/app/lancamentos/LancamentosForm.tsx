@@ -1,11 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLancamentos } from "../hooks/useLancamentos";
+import { useCategorias } from "../hooks/useCategorias";
 
 export default function LancamentosForm({ onAdd, onClose }) {
   const {
     descricao, setdescricao,
     valor, setValor,
+    idCategoria, setIdCategoria,
     categoria, setCategoria,
     data, setData,
     formaPagamento, setFormaPagamento,
@@ -16,6 +18,15 @@ export default function LancamentosForm({ onAdd, onClose }) {
     handleLancamento,
     lancamentos,
   } = useLancamentos();
+
+  const{
+    categorias,
+    handleGetCategorias
+  } = useCategorias();
+
+  useEffect(() => {
+    handleGetCategorias();
+  }, []);
 
   const [showCategoriaModal, setShowCategoriaModal] = useState(false);
   const [novaCategoria, setNovaCategoria] = useState("");
@@ -91,16 +102,29 @@ export default function LancamentosForm({ onAdd, onClose }) {
             />
 
             <div className="flex items-center gap-2 mb-3">
-              <select
-                name="categoria"
-                value={categoria}
-                onChange={(e) => setCategoria(e.target.value)}
-                className="w-full px-4 py-2 border rounded-lg bg-white text-gray-400"
-              >
-                <option value={1}>Contas fixas</option>
-                <option value={2}>Alimentação</option>
-                <option value={3}>Saúde</option>
-              </select>
+            <select
+          name="idCategoria"
+          value={idCategoria}
+          onChange={(e) => setIdCategoria(e.target.value)}
+          className="w-full mb-2 px-4 py-2 border rounded-lg bg-white text-gray-400"
+        >
+          <option value={1}>Contas fixas</option>
+          <option value={2}>Alimentação</option>
+          <option value={3}>Aluguel</option>
+          <option value={4}>Conta Telefone</option>
+          <option value={5}>Saúde</option>
+          <option value={6}>Vestuário</option>
+          <option value={7}>Lazer</option>
+          <option value={8}>Transporte</option>
+          <option value={9}>Mercado</option>
+          <option value={10}>Eletrônicos</option>
+          <option value={11}>Salão</option>
+          {categorias.map((cat) => (
+          <option key={cat.idCategoria} value={cat.idCategoria}>
+            {cat.categoria}
+          </option>
+        ))}
+        </select>
               <button
                 type="button"
                 onClick={() => setShowCategoriaModal(true)}
