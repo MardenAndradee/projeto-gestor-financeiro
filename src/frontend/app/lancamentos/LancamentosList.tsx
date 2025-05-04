@@ -21,7 +21,7 @@ type Filtros = {
   categoria: string;
 };
 
-export default function LancamentoList({ onAddLancamento, filtros }: { onAddLancamento: () => void; filtros: Filtros; }) {
+export default function LancamentoList({ filtros }: { filtros: Filtros }) {
   const { lancamentos, handleGetLancamentos,handleDeleteLancamento,handleEditLancamento } = useLancamentos();
   const [showForm, setShowForm] = useState(false);
 
