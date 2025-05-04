@@ -52,13 +52,13 @@ export function useLancamentos() {
 
       const dataInicial = filtros?.dataInicio || "";
     const dataFinal = filtros?.dataFim || "";
-    const categoria = filtros?.categoria || "";
+    const categoriaId = filtros?.categoria || "";
 
     const queryParams = new URLSearchParams({
       dataInicial,
       dataFinal,
       idUsuario,
-      categoria
+      categoriaId
     });
 
 

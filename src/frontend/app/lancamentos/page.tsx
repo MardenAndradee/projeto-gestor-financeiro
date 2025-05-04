@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import LancamentoList from "./LancamentosList";
-import { useLancamentos } from "../hooks/useLancamentos";
 import { useCategorias } from "../hooks/useCategorias";
 import { useRouter } from "next/navigation";
 
@@ -46,7 +45,7 @@ export default function LancamentosPage() {
   });
 
   const handleAdicionarFiltro = () => {
-    // aqui você aplicaria o filtro no futuro
+    
 
     console.log("Filtros aplicados:", filtros);
   };
@@ -84,6 +83,7 @@ export default function LancamentosPage() {
           onChange={(e) => setFiltros({ ...filtros, categoria: e.target.value })}
           className="w-full mb-2 px-4 py-2 border rounded-lg bg-white text-gray-400"
         >
+          <option value="">Selecione uma categoria</option>
           <option value={1}>Contas fixas</option>
           <option value={2}>Alimentação</option>
           <option value={3}>Aluguel</option>
@@ -120,7 +120,7 @@ export default function LancamentosPage() {
 
         {/* Lista de Lançamentos */}
         <div className="bg-white p-4 rounded-lg shadow">
-        <LancamentoList onAddLancamento={() => setShowForm(true) }  filtros={filtros}/>
+        <LancamentoList filtros={filtros}/>
         </div>
       </div>
     </div>

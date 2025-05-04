@@ -3,12 +3,16 @@ import { useState, useEffect } from "react";
 import { useLancamentos } from "../hooks/useLancamentos";
 import { useCategorias } from "../hooks/useCategorias";
 
-export default function LancamentosForm({ onAdd, onClose }) {
+type LancamentosFormProps = {
+  onAdd: () => void;
+  onClose: () => void;
+};
+
+export default function LancamentosForm({ onAdd, onClose }: LancamentosFormProps) {
   const {
     descricao, setdescricao,
     valor, setValor,
     idCategoria, setIdCategoria,
-    categoria, setCategoria,
     data, setData,
     formaPagamento, setFormaPagamento,
     qtdParcelas, setQtdParcelas,
@@ -21,12 +25,20 @@ export default function LancamentosForm({ onAdd, onClose }) {
 
   const{
     categorias,
-    handleGetCategorias
+    categoria, setCategoria,
+    handleGetCategorias,
+    handleCategorias
   } = useCategorias();
 
   useEffect(() => {
     handleGetCategorias();
   }, []);
+
+  useEffect(() => {
+    if (formaPagamento !== "Crédito") {
+      setQtdParcelas(1);
+    }
+  }, [formaPagamento]);
 
   const [showCategoriaModal, setShowCategoriaModal] = useState(false);
   const [novaCategoria, setNovaCategoria] = useState("");
@@ -37,13 +49,11 @@ export default function LancamentosForm({ onAdd, onClose }) {
     onClose();
   };
 
-  const handleAddCategoria = () => {
-    if (novaCategoria.trim() !== "") {
-      // Enviar pro backend
-      alert(`Categoria "${novaCategoria}" cadastrada!`);
+  const handleAddCategoria = async () => {
+      await handleCategorias();
       setNovaCategoria("");
       setShowCategoriaModal(false);
-    }
+    
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -66,7 +76,7 @@ export default function LancamentosForm({ onAdd, onClose }) {
         setFormaPagamento(value);
         break;
       case "qtdParcelas":
-        setQtdParcelas(value);
+        setQtdParcelas(Number(value));
         break;
       case "usuario":
         setUsuario(value);
@@ -148,8 +158,8 @@ export default function LancamentosForm({ onAdd, onClose }) {
               onChange={(e) => setFormaPagamento(e.target.value)}
               className="w-full mb-3 px-4 py-2 border rounded-lg bg-white text-gray-400"
             >
-              <option>Crédito</option>
               <option>Débito</option>
+              <option>Crédito</option>
               <option>Dinheiro</option>
               <option>Pix</option>
             </select>
@@ -194,8 +204,8 @@ export default function LancamentosForm({ onAdd, onClose }) {
 
             <input
               type="text"
-              value={novaCategoria}
-              onChange={(e) => setNovaCategoria(e.target.value)}
+              value={categoria}
+              onChange={(e) => setCategoria(e.target.value)}
               placeholder="Nome da categoria"
               className="w-full mb-4 px-4 py-2 border rounded-lg"
             />
