@@ -1,4 +1,5 @@
 Projeto Gestor Financeiro
+
 O sistema de gerenciamento financeiro é uma aplicação web desenvolvida com Java (Spring Boot) no backend e TypeScript no frontend.
 Ele permite o cadastro, controle e acompanhamento de despesas, com foco na organização financeira pessoal ou empresarial.
 Os usuários podem registrar despesas com informações como data, categoria, valor, descrição e responsável, além de visualizar e filtrar os lançamentos por diferentes critérios.
@@ -36,6 +37,7 @@ Maven - Gerente de Dependência
 ✒️ Autores
 
 Marden e Carlos - Responsáveis pelo Back-end, Banco de dados e conexão com o Front-end
+
 Felipe e Otávio - Responsáveis pelo Front-end e estilização
 
 📄 Licença
