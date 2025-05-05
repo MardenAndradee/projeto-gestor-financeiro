@@ -2,15 +2,19 @@
 import { AlertTriangle } from "lucide-react";
 import { useState } from "react";
 
-
+function obterDataHoje() {
+  const hoje = new Date();
+  const dataHoje = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDay());
+  return dataHoje.toISOString().split("T")[0]; // retorna "YYYY-MM-DD"
+}
 
 export function useLancamentos() {
   const [descricao, setdescricao] = useState("");
   const [valor, setValor] = useState("");
-  const [categoria, setCategoria] = useState("");
-  const [idCategoria, setIdCategoria] = useState("");
-  const [data, setData] = useState("");
-  const [formaPagamento, setFormaPagamento] = useState("");
+  const [categoria, setCategoria] = useState("Contas Fixas");
+  const [idCategoria, setIdCategoria] = useState("1");
+  const [data, setData] = useState(obterDataHoje());
+  const [formaPagamento, setFormaPagamento] = useState("Débito");
   const [qtdParcelas, setQtdParcelas] = useState(1);
   const [usuario, setUsuario] = useState("");
   const [error, setError] = useState("");

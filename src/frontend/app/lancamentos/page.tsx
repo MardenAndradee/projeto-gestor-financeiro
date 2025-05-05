@@ -18,7 +18,9 @@ export default function LancamentosPage() {
   
     useEffect(() => {
       handleGetCategorias();
+    }, []);
 
+    useEffect(() => {
       const token = localStorage.getItem('token');
         if (!token) {
           router.push("/login");
