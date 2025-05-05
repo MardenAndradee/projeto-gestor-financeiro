@@ -40,6 +40,17 @@ export default function LancamentosForm({ onAdd, onClose }: LancamentosFormProps
     }
   }, [formaPagamento]);
 
+  function obterDataHoje() {
+    const hoje = new Date();
+    const dataHoje = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDay());
+    return dataHoje.toISOString().split("T")[0]; // retorna "YYYY-MM-DD"
+  }
+
+  useEffect(() => {
+    setData(obterDataHoje())
+    
+  }, [data]);
+
   const [showCategoriaModal, setShowCategoriaModal] = useState(false);
   const [novaCategoria, setNovaCategoria] = useState("");
 
@@ -158,10 +169,11 @@ export default function LancamentosForm({ onAdd, onClose }: LancamentosFormProps
               onChange={(e) => setFormaPagamento(e.target.value)}
               className="w-full mb-3 px-4 py-2 border rounded-lg bg-white text-gray-400"
             >
-              <option>Débito</option>
-              <option>Crédito</option>
-              <option>Dinheiro</option>
-              <option>Pix</option>
+              <option>Selecione a forma de pagamento</option>
+              <option value={"Débito"}>Débito</option>
+              <option value={"Crédito"}>Crédito</option>
+              <option value={"Dinheiro"}>Dinheiro</option>
+              <option value={"Pix"}>Pix</option>
             </select>
 
             {formaPagamento === "Crédito" && (
