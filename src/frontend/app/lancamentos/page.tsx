@@ -1,16 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import LancamentoForm from "./LancamentosForm";
 import LancamentoList from "./LancamentosList";
+import LancamentoForm from "./LancamentosForm";
+import { useCategorias } from "../hooks/useCategorias";
+import { useRouter } from "next/navigation";
 
 export default function LancamentosPage() {
   const [showForm, setShowForm] = useState(false);
   const [lancamentos, setLancamentos] = useState([]);
+  const { categorias, handleGetCategorias } = useCategorias();
+  const router = useRouter();
+
+  useEffect(() => {
+    handleGetCategorias();
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
+
+  function obterPrimeiroDia() {
+    const hoje = new Date();
+    const primeiroDia = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+    return primeiroDia.toISOString().split("T")[0];
+  }
+
+  function obterUltimoDia() {
+    const hoje = new Date();
+    const ultimoDia = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
+    return ultimoDia.toISOString().split("T")[0];
+  }
+
   const [filtros, setFiltros] = useState({
-    dataInicio: "",
-    dataFim: "",
+    dataInicio: obterPrimeiroDia(),
+    dataFim: obterUltimoDia(),
     categoria: "",
   });
 
@@ -27,22 +55,22 @@ export default function LancamentosPage() {
   };
 
   const handleRemoverFiltros = () => {
-    setFiltros({ dataInicio: "", dataFim: "", categoria: "" });
+    setFiltros({
+      dataInicio: obterPrimeiroDia(),
+      dataFim: obterUltimoDia(),
+      categoria: "",
+    });
   };
 
   return (
     <div className="flex min-h-screen bg-[#EDF3FB]">
-      {/* Navbar lateral */}
       <Navbar />
-
-      {/* Conteúdo principal */}
       <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-auto">
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Filtros */}
-          <div className="bg-white p-4 rounded-lg shadow">
+          <div className="bg-white p-4 rounded-lg shadow mb-6">
             <h2 className="text-lg font-bold text-gray-800 mb-4">Filtros</h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <input
                 type="date"
                 value={filtros.dataInicio}
@@ -59,15 +87,21 @@ export default function LancamentosPage() {
                 }
                 className="w-full px-4 py-2 border rounded-lg text-gray-700"
               />
-              <input
-                type="text"
+              <select
+                name="idCategoria"
                 value={filtros.categoria}
                 onChange={(e) =>
                   setFiltros({ ...filtros, categoria: e.target.value })
                 }
-                className="w-full px-4 py-2 border rounded-lg text-gray-700"
-                placeholder="Categoria"
-              />
+                className="w-full px-4 py-2 border rounded-lg bg-white text-gray-700"
+              >
+                <option value="">Selecione uma categoria</option>
+                {categorias.map((cat) => (
+                  <option key={cat.idCategoria} value={cat.idCategoria}>
+                    {cat.categoria}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="flex flex-wrap justify-end gap-2">
@@ -86,16 +120,13 @@ export default function LancamentosPage() {
             </div>
           </div>
 
-          {/* Lista de Lançamentos */}
+          {/* Lista de lançamentos */}
           <div className="bg-white p-4 rounded-lg shadow">
-            <LancamentoList
-              lancamentos={lancamentos}
-              onAddLancamento={() => setShowForm(true)}
-            />
+            <LancamentoList filtros={filtros} />
           </div>
         </div>
 
-        {/* Modal do Formulário */}
+        {/* Modal do formulário */}
         {showForm && (
           <LancamentoForm
             onAdd={handleAddLancamento}

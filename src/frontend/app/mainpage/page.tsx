@@ -1,13 +1,22 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import OverviewCard from "../components/OverviewCard";
 import ExpenseChart from "../components/ExpenseChart";
+import { useRouter } from "next/navigation";
 
 export default function MainPage() {
   const [saldo, setSaldo] = useState(5000);
   const [receitas, setReceitas] = useState(12000);
   const [despesas, setDespesas] = useState(7000);
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+      if (!token) {
+        router.push("/login");
+      }
+  }, []);
 
   return (
     <div className="flex min-h-screen bg-[#EDF3FB]">

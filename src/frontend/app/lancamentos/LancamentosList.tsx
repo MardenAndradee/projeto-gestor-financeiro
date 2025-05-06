@@ -1,14 +1,36 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useLancamentos } from "../hooks/useLancamentos";
+import LancamentoForm from "./LancamentosForm";
 
-export default function LancamentoList({
-  lancamentos,
-  onAddLancamento,
-}: {
-  lancamentos: any[];
-  onAddLancamento: () => void;
-}) {
+type Lancamento = {
+  descricao: string;
+  valor: number;
+  categoria: {
+    idCategoria: number;
+  };
+  data: string;
+  formaPagamento: string;
+  qtdParcelas: number;
+  nParcela?: number;
+  dataParcela?: string;
+};
+
+type Filtros = {
+  dataInicio: string;
+  dataFim: string;
+  categoria: string;
+};
+
+export default function LancamentoList({ filtros }: { filtros: Filtros }) {
+  const { lancamentos, handleGetLancamentos, handleDeleteLancamento, handleEditLancamento } = useLancamentos();
+  const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    handleGetLancamentos(filtros);
+  }, [filtros]);
+
   const handleExportarExcel = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -40,7 +62,7 @@ export default function LancamentoList({
         <h2 className="text-xl font-bold text-gray-800">Meus Lançamentos</h2>
         <div className="flex space-x-2">
           <button
-            onClick={onAddLancamento}
+            onClick={() => setShowForm(true)}
             className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
           >
             Adicionar
@@ -54,24 +76,29 @@ export default function LancamentoList({
         </div>
       </div>
 
-      {lancamentos.length === 0 ? (
+      {Array.isArray(lancamentos) && lancamentos.length === 0 ? (
         <p className="text-gray-500">Nenhum lançamento adicionado.</p>
-      ) : (
+      ) : Array.isArray(lancamentos) ? (
         <ul className="space-y-3">
           {lancamentos.map((item, index) => (
             <li key={index} className="p-4 border-b border-gray-200 flex justify-between">
               <div>
                 <p className="text-gray-800 font-medium">{item.descricao}</p>
                 <span className="text-gray-500 text-sm">
-                  {new Date(item.dataParcela || item.data).toLocaleDateString("pt-BR")} - {item.categoria} | {item.formaPagamento}{" "}
-                  {item.qtdParcelas > 1 ? ` |  ${item.nParcela} / ${item.qtdParcelas}` : ""}
+                  {new Date(item.dataParcela || item.data).toLocaleDateString("pt-BR")} -{" "}
+                  {typeof item.categoria === "object" ? item.categoria.idCategoria : item.categoria} | {item.formaPagamento}{" "}
+                  {item.qtdParcelas > 1 ? ` | ${item.nParcela} / ${item.qtdParcelas}` : ""}
                 </span>
               </div>
               <span className="text-green-600 font-semibold">R$ {item.valor.toFixed(2)}</span>
             </li>
           ))}
         </ul>
+      ) : (
+        <p className="text-red-500">Erro ao carregar lançamentos.</p>
       )}
+
+      {showForm && <LancamentoForm onAdd={() => setShowForm(false)} onClose={() => setShowForm(false)} />}
     </div>
   );
 }
