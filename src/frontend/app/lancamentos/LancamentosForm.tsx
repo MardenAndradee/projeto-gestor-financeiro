@@ -1,120 +1,242 @@
 "use client";
-
-import React, { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useLancamentos } from "../hooks/useLancamentos";
-import LancamentoForm from "./LancamentosForm";
+import { useCategorias } from "../hooks/useCategorias";
 
-type Lancamento = {
-  descricao: string;
-  valor: number;
-  categoria: {
-    idCategoria: number;
-  };
-  data: string;
-  formaPagamento: string;
-  qtdParcelas: number;
-  nParcela?: number;
-  dataParcela?: string;
+type LancamentosFormProps = {
+  onClose: () => void;
 };
 
-type Filtros = {
-  dataInicio: string;
-  dataFim: string;
-  categoria: string;
-};
-
-export default function LancamentoList({ filtros }: { filtros: Filtros }) {
+export default function LancamentosForm({ onClose }: LancamentosFormProps) {
   const {
+    descricao, setdescricao,
+    valor, setValor,
+    idCategoria, setIdCategoria,
+    data, setData,
+    formaPagamento, setFormaPagamento,
+    qtdParcelas, setQtdParcelas,
+    usuario, setUsuario,
+    error,
+    success,
+    handleLancamento,
     lancamentos,
-    handleGetLancamentos,
-    handleDeleteLancamento,
-    handleEditLancamento,
   } = useLancamentos();
 
-  const [showForm, setShowForm] = useState(false);
+  const{
+    categorias,
+    categoria, setCategoria,
+    handleGetCategorias,
+    handleCategorias
+  } = useCategorias();
 
   useEffect(() => {
-    handleGetLancamentos(filtros);
-  }, [filtros]);
+    handleGetCategorias();
+  }, []);
 
-  const handleExportarExcel = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8080/despesa/export/excel", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+  useEffect(() => {
+    if (formaPagamento !== "Crédito") {
+      setQtdParcelas(1);
+    }
+  }, [formaPagamento]);
 
-      if (!response.ok) throw new Error("Erro ao exportar planilha.");
+  function obterDataHoje() {
+    const hoje = new Date();
+    const dataHoje = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+    return dataHoje.toISOString().split("T")[0]; // retorna "YYYY-MM-DD"
+  }
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      const now = new Date();
-      const timestamp = now.toISOString().replace(/[:.]/g, "-");
-      a.download = `despesas_${timestamp}.xlsx`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error(error);
-      alert("Erro ao exportar o Excel.");
+  useEffect(() => {
+    setData(obterDataHoje())
+    
+  }, [data]);
+
+  const [showCategoriaModal, setShowCategoriaModal] = useState(false);
+  const [novaCategoria, setNovaCategoria] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await handleLancamento();
+    onClose();
+  };
+
+  const handleAddCategoria = async () => {
+      await handleCategorias();
+      setNovaCategoria("");
+      setShowCategoriaModal(false);
+    
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+
+    switch (name) {
+      case "descricao":
+        setdescricao(value);
+        break;
+      case "valor":
+        setValor(value);
+        break;
+      case "categoria":
+        setCategoria(value);
+        break;
+      case "data":
+        setData(value);
+        break;
+      case "formaPagamento":
+        setFormaPagamento(value);
+        break;
+      case "qtdParcelas":
+        setQtdParcelas(Number(value));
+        break;
+      case "usuario":
+        setUsuario(value);
+        break;
+      default:
+        break;
     }
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-lg">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-gray-800">Meus Lançamentos</h2>
-        <div className="flex space-x-2">
-          <button
-            onClick={() => setShowForm(true)}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
-          >
-            Adicionar
-          </button>
-          <button
-            onClick={handleExportarExcel}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-          >
-            Exportar Excel
-          </button>
-        </div>
-      </div>
+    <>
+      <form onSubmit={handleSubmit}>
+        <div className="fixed inset-0 backdrop-blur-sm flex justify-center items-center z-10">
+          <div className="bg-white p-6 rounded-xl shadow-lg w-11/12 max-w-md">
+            <h3 className="text-xl font-semibold mb-4 text-gray-900">Adicionar Lançamento</h3>
 
-      {Array.isArray(lancamentos) && lancamentos.length === 0 ? (
-        <p className="text-gray-500">Nenhum lançamento adicionado.</p>
-      ) : (
-        <ul className="space-y-3">
-          {lancamentos.map((item, index) => (
-            <li
-              key={index}
-              className="p-4 border-b border-gray-200 flex justify-between"
+            <input
+              type="text"
+              name="descricao"
+              placeholder="Descrição"
+              value={descricao}
+              onChange={(e) => setdescricao(e.target.value)}
+              className="w-full mb-3 px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400"
+            />
+
+            <input
+              type="number"
+              name="valor"
+              placeholder="Valor"
+              value={valor}
+              onChange={(e) => setValor(e.target.value)}
+              className="w-full mb-3 px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400"
+            />
+
+            <div className="flex items-center gap-2 mb-3">
+            <select
+          name="idCategoria"
+          value={idCategoria}
+          onChange={(e) => setIdCategoria(e.target.value)}
+          className="w-full mb-2 px-4 py-2 border rounded-lg bg-white text-gray-400"
+        >
+          <option value={1}>Contas fixas</option>
+          <option value={2}>Alimentação</option>
+          <option value={3}>Aluguel</option>
+          <option value={4}>Conta Telefone</option>
+          <option value={5}>Saúde</option>
+          <option value={6}>Vestuário</option>
+          <option value={7}>Lazer</option>
+          <option value={8}>Transporte</option>
+          <option value={9}>Mercado</option>
+          <option value={10}>Eletrônicos</option>
+          <option value={11}>Salão</option>
+          {categorias.map((cat) => (
+          <option key={cat.idCategoria} value={cat.idCategoria}>
+            {cat.categoria}
+          </option>
+        ))}
+        </select>
+              <button
+                type="button"
+                onClick={() => setShowCategoriaModal(true)}
+                className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-3 rounded-full"
+              >
+                +
+              </button>
+            </div>
+
+            <input
+              type="date"
+              name="data"
+              value={data}
+              onChange={(e) => setData(e.target.value)}
+              className="w-full mb-3 px-4 py-2 border rounded-lg bg-white text-gray-400"
+            />
+
+            <select
+              name="formaPagamento"
+              value={formaPagamento}
+              onChange={(e) => setFormaPagamento(e.target.value)}
+              className="w-full mb-3 px-4 py-2 border rounded-lg bg-white text-gray-400"
             >
-              <div>
-                <p className="text-gray-800 font-medium">{item.descricao}</p>
-                <span className="text-gray-500 text-sm">
-                  {new Date(item.dataParcela || item.data).toLocaleDateString("pt-BR")} -{" "}
-                  {item.categoria} | {item.formaPagamento}{" "}
-                  {item.qtdParcelas > 1
-                    ? ` |  ${item.nParcela} / ${item.qtdParcelas}`
-                    : ""}
-                </span>
-              </div>
-              <span className="text-green-600 font-semibold">
-                R$ {item.valor.toFixed(2)}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
+              <option value={"Débito"}>Débito</option>
+              <option value={"Crédito"}>Crédito</option>
+              <option value={"Dinheiro"}>Dinheiro</option>
+              <option value={"Pix"}>Pix</option>
+            </select>
 
-      {showForm && (
-        <LancamentoForm
-          onAdd={() => setShowForm(true)}
-          onClose={() => setShowForm(false)}
-        />
+            {formaPagamento === "Crédito" && (
+              <input
+                type="number"
+                name="qtdParcelas"
+                min="1"
+                value={qtdParcelas}
+                onChange={handleChange}
+                className="w-full mb-3 px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400"
+                placeholder="Quantidade de Parcelas"
+              />
+            )}
+
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={onClose}
+                className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
+                type="button"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              >
+                Adicionar
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      {/* Modal de Nova Categoria */}
+    
+      {showCategoriaModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-20">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">Nova Categoria</h3>
+
+            <input
+              type="text"
+              value={categoria}
+              onChange={(e) => setCategoria(e.target.value)}
+              placeholder="Nome da categoria"
+              className="w-full mb-4 px-4 py-2 border rounded-lg"
+            />
+
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => setShowCategoriaModal(false)}
+                className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleAddCategoria}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              >
+                Salvar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
-    </div>
+    </>
   );
 }

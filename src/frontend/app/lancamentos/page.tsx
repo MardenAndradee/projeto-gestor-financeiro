@@ -42,14 +42,6 @@ export default function LancamentosPage() {
     categoria: "",
   });
 
-  const handleAddLancamento = (novoLancamento) => {
-    setLancamentos([
-      ...lancamentos,
-      { ...novoLancamento, valor: parseFloat(novoLancamento.valor) },
-    ]);
-    setShowForm(false);
-  };
-
   const handleAdicionarFiltro = () => {
     console.log("Filtros aplicados:", filtros);
   };
@@ -96,6 +88,17 @@ export default function LancamentosPage() {
                 className="w-full px-4 py-2 border rounded-lg bg-white text-gray-700"
               >
                 <option value="">Selecione uma categoria</option>
+                <option value={1}>Contas fixas</option>
+                <option value={2}>Alimentação</option>
+                <option value={3}>Aluguel</option>
+                <option value={4}>Conta Telefone</option>
+                <option value={5}>Saúde</option>
+                <option value={6}>Vestuário</option>
+                <option value={7}>Lazer</option>
+                <option value={8}>Transporte</option>
+                <option value={9}>Mercado</option>
+                <option value={10}>Eletrônicos</option>
+                <option value={11}>Salão</option>
                 {categorias.map((cat) => (
                   <option key={cat.idCategoria} value={cat.idCategoria}>
                     {cat.categoria}
@@ -129,7 +132,6 @@ export default function LancamentosPage() {
         {/* Modal do formulário */}
         {showForm && (
           <LancamentoForm
-            onAdd={handleAddLancamento}
             onClose={() => setShowForm(false)}
           />
         )}
