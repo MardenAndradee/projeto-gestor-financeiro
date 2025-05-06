@@ -41,6 +41,11 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST,"/usuario").permitAll()
                         .requestMatchers(HttpMethod.DELETE,"/usuario").permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/auth/**")).permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
