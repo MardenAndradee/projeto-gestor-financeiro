@@ -4,7 +4,7 @@ import { useState } from "react";
 
 function obterDataHoje() {
   const hoje = new Date();
-  const dataHoje = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDay());
+  const dataHoje = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
   return dataHoje.toISOString().split("T")[0]; // retorna "YYYY-MM-DD"
 }
 

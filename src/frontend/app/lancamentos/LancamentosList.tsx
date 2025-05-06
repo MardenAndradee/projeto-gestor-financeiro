@@ -98,7 +98,7 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
         <p className="text-red-500">Erro ao carregar lançamentos.</p>
       )}
 
-      {showForm && <LancamentoForm onAdd={() => setShowForm(false)} onClose={() => setShowForm(false)} />}
+      {showForm && <LancamentoForm onClose={() => setShowForm(false)} />}
     </div>
   );
 }
