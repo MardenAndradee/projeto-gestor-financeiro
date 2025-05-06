@@ -1,14 +1,26 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  ChevronLeft,
+  ChevronRight,
+  HelpCircle,
+  User,
+  LogOut,
+} from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
 import logoVerde from "../public/logo_verde.png";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    router.push("/login");
+  }
 
   return (
     <aside
@@ -20,7 +32,13 @@ export default function Navbar() {
       <div className="flex items-center justify-between px-4 py-3 border-b">
         {!collapsed && (
           <Link href="/mainpage">
-          <Image src={logoVerde} alt="Logo" width={300} height={40  } className="object-contain" />
+            <Image
+              src={logoVerde}
+              alt="Logo"
+              width={300}
+              height={40}
+              className="object-contain"
+            />
           </Link>
         )}
         <button
@@ -50,16 +68,29 @@ export default function Navbar() {
         <NavItem
           href="/ajuda"
           label="❓ Ajuda"
+          icon={<HelpCircle size={18} />}
           active={pathname === "/ajuda"}
           collapsed={collapsed}
         />
         <NavItem
           href="/perfil"
           label="👤 Perfil"
+          icon={<User size={18} />}
           active={pathname === "/perfil"}
           collapsed={collapsed}
         />
       </nav>
+
+      {/* Logout (opcional no rodapé) */}
+      <div className="border-t px-3 py-3">
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-2 text-red-600 hover:text-red-800 text-sm font-medium"
+        >
+          <LogOut size={18} />
+          {!collapsed && <span>Sair</span>}
+        </button>
+      </div>
     </aside>
   );
 }

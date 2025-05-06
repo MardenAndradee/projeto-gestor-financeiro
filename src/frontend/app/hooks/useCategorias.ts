@@ -4,6 +4,7 @@ import { useState } from "react";
 
 
 export function useCategorias() {
+  const [idCategoria, setIdCategoria] = useState("");
   const [categoria, setCategoria] = useState("");
   const [usuario, setUsuario] = useState("");
   const [error, setError] = useState("");
@@ -68,7 +69,6 @@ export function useCategorias() {
     try {
 
         const token = localStorage.getItem("token");
-        if (!token) throw new Error("Usuário não autenticado");
 
         const idUsuario = await buscarUsuario();
 
@@ -131,6 +131,7 @@ export function useCategorias() {
 
 
   return {
+    idCategoria, setIdCategoria,
     categoria, setCategoria,
     usuario, setUsuario,
     error,
