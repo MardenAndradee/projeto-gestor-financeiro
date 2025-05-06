@@ -79,14 +79,6 @@ export default function Navbar() {
           active={pathname === "/perfil"}
           collapsed={collapsed}
         />
-
-    <div
-      onClick={handleLogout}
-      className={`cursor-pointer flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition`}
-    >
-      <LogOut size={18} />
-      {!collapsed && <span>Sair</span>}
-    </div>
       </nav>
 
       {/* Logout (opcional no rodapé) */}
