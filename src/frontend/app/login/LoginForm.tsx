@@ -1,12 +1,18 @@
 "use client";
 import { useAuth } from "../hooks/useAuth";
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
   const { login, setLogin, senha, setSenha, error, handleLogin } = useAuth();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await handleLogin();
+  };
+
+  const handleForgotPasswordClick = () => {
+    router.push("/esqueceu-senha"); // redireciona para a página
   };
 
   return (
@@ -41,11 +47,15 @@ export default function LoginForm() {
       </button>
 
       <div className="flex justify-center text-sm">
-        <a href="#" className="text-green-600 hover:underline">
+        <button
+          type="button"
+          onClick={handleForgotPasswordClick}
+          className="text-green-600 hover:underline"
+        >
           Esqueceu a senha?
-        </a>
+        </button>
       </div>
-
     </form>
   );
 }
+
