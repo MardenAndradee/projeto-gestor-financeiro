@@ -32,9 +32,8 @@ public class Usuarios implements Serializable, UserDetails {
     private String email;
 
 
-    @Column(name = "celular", nullable = false, unique = true)
-    @NotBlank
-    @Size(min = 8, max = 12)
+    @Column(name = "celular", nullable = true, unique = true)
+
     private String celular;
 
 
