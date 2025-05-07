@@ -4,8 +4,6 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   ChevronLeft,
   ChevronRight,
-  HelpCircle,
-  User,
   LogOut,
 } from "lucide-react";
 import { useState } from "react";
@@ -67,15 +65,15 @@ export default function Navbar() {
         />
         <NavItem
           href="/ajuda"
-          label="❓ Ajuda"
-          icon={<HelpCircle size={18} />}
+          label="Ajuda"
+          icon="❓"
           active={pathname === "/ajuda"}
           collapsed={collapsed}
         />
         <NavItem
           href="/perfil"
-          label="👤 Perfil"
-          icon={<User size={18} />}
+          label="Perfil"
+          icon="👤"
           active={pathname === "/perfil"}
           collapsed={collapsed}
         />

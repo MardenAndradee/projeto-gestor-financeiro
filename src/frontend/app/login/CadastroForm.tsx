@@ -7,6 +7,7 @@ export default function CadastroForm() {
       email, setEmail,
       login, setLogin,
       senha, setSenha,
+      celular, setNumero,
       confirmarSenha, setConfirmarSenha,
       error,
       success,
@@ -42,6 +43,19 @@ export default function CadastroForm() {
           placeholder="Digite seu e-mail"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Número
+        </label>
+        <input
+          type="number"
+          className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 text-gray-600"
+          placeholder="Digite seu e-mail"
+          value={celular}
+          onChange={(e) => setNumero(e.target.value)}
         />
       </div>
 
