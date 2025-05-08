@@ -117,9 +117,11 @@ public class UsuariosService implements UserDetailsService {
                 throw new IllegalArgumentException("Telefone invalido");
             }
 
-            if (perfilAtualizarDTO.senha() != null && !perfilAtualizarDTO.senha().isBlank()){
+            if (perfilAtualizarDTO.senha().length() >= 3 && perfilAtualizarDTO.senha().length() < 25){
                 String senhaCriptografada = passwordEncoder.encode(perfilAtualizarDTO.senha());
                 usuario.setSenha(senhaCriptografada);
+            }else {
+                throw new IllegalArgumentException("Senha deve ter entre 3 a 25 caracteres");
             }
 
             Set<ConstraintViolation<Usuarios>> violations = validator.validate(usuario);
