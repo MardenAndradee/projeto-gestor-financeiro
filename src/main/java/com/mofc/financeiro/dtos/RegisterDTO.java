@@ -8,7 +8,7 @@ public record RegisterDTO(
     @NotBlank(message = "Nome é obrigatorio")String nome,
     @Email(message = "Email invalido") String email,
     String celular,
-    @NotBlank (message = "Login é obrigatorio") String login,
+    String login,
     @NotBlank(message = "Senha deve ter no minimo 3 caracteres") String senha
 
 ){}
