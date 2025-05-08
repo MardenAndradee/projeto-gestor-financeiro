@@ -106,8 +106,16 @@ public class UsuariosService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario não encontrado"));
         try {
             if (perfilAtualizarDTO.nome() != null) usuario.setNome(perfilAtualizarDTO.nome());
+
             if (perfilAtualizarDTO.email() != null) usuario.setEmail(perfilAtualizarDTO.email());
-            if (perfilAtualizarDTO.celular() != null) usuario.setCelular(perfilAtualizarDTO.celular());
+
+            if (perfilAtualizarDTO.celular().isBlank() ){
+                usuario.setCelular(perfilAtualizarDTO.celular());
+            }else if(perfilAtualizarDTO.celular().length() >= 11) {
+                usuario.setCelular(perfilAtualizarDTO.celular());
+            }else {
+                throw new IllegalArgumentException("Telefone invalido");
+            }
 
             if (perfilAtualizarDTO.senha() != null && !perfilAtualizarDTO.senha().isBlank()){
                 String senhaCriptografada = passwordEncoder.encode(perfilAtualizarDTO.senha());
