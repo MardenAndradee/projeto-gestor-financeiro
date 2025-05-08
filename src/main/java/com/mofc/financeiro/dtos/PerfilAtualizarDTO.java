@@ -8,7 +8,7 @@ public record PerfilAtualizarDTO(
 
     @NotBlank(message = "Nome deve ter no minimo 4 caracteres")String nome,
     @Email(message = "Email invalido")String email,
-    @NotBlank(message = "Telefone invalido")String celular,
+    String celular,
     String senha
     )
 {}
