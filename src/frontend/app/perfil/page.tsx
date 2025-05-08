@@ -6,8 +6,10 @@ import { Camera, Crown } from "lucide-react";
 import { toast } from "react-toastify";
 import perfilPlano from "../public/plano.jpg";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function PerfilPage() {
+  const [collapsed, setCollapsed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     nome: "",
@@ -18,12 +20,13 @@ export default function PerfilPage() {
     fotoPreview: "" as string | ArrayBuffer | null,
   });
 
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       console.error("Token JWT não encontrado");
+      router.push("/login");
       return;
     }
 
@@ -107,11 +110,13 @@ export default function PerfilPage() {
 
   return (
     <div className="flex min-h-screen bg-[#EDF3FB]">
-      <Navbar isMobileMenuOpen={isMobileMenuOpen} setIsMobileMenuOpen={setIsMobileMenuOpen} />
+      <Navbar collapsed={collapsed} setCollapsed={setCollapsed} />
 
       {/* Conteúdo principal */}
-      <main className="flex-1 p-4 md:p-6 lg:p-8 w-full overflow-auto">
-
+      <main
+        className={`transition-all duration-300 ease-in-out flex-1 p-4 md:p-6 lg:p-8 overflow-auto 
+        mt-14 md:ml-16 ${!collapsed && "md:ml-64"}`}
+      >
         <div className="max-w-4xl mx-auto p-4 space-y-6">
           <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col md:flex-row items-center md:items-start gap-8">
             {/* Foto de perfil */}
@@ -206,3 +211,4 @@ export default function PerfilPage() {
     </div>
   );
 }
+  

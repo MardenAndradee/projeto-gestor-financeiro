@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 
 export default function LancamentosPage() {
   const [showForm, setShowForm] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const [lancamentos, setLancamentos] = useState([]);
   const { categorias, handleGetCategorias } = useCategorias();
   const router = useRouter();
@@ -26,14 +27,16 @@ export default function LancamentosPage() {
 
   function obterPrimeiroDia() {
     const hoje = new Date();
-    const primeiroDia = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-    return primeiroDia.toISOString().split("T")[0];
+    return new Date(hoje.getFullYear(), hoje.getMonth(), 1)
+      .toISOString()
+      .split("T")[0];
   }
 
   function obterUltimoDia() {
     const hoje = new Date();
-    const ultimoDia = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
-    return ultimoDia.toISOString().split("T")[0];
+    return new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0)
+      .toISOString()
+      .split("T")[0];
   }
 
   const [filtros, setFiltros] = useState({
@@ -56,8 +59,14 @@ export default function LancamentosPage() {
 
   return (
     <div className="flex min-h-screen bg-[#EDF3FB]">
-      <Navbar />
-      <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-auto">
+      {/* Navbar com sidebar e topbar integradas */}
+      <Navbar collapsed={collapsed} setCollapsed={setCollapsed} />
+
+      {/* Conteúdo principal */}
+      <main
+        className={`transition-all duration-300 ease-in-out flex-1 p-4 md:p-6 lg:p-8 overflow-auto
+        mt-14 md:ml-16 ${!collapsed && "md:ml-64"}`}
+      >
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Filtros */}
           <div className="bg-white p-4 rounded-lg shadow mb-6">
@@ -88,17 +97,25 @@ export default function LancamentosPage() {
                 className="w-full px-4 py-2 border rounded-lg bg-white text-gray-700"
               >
                 <option value="">Selecione uma categoria</option>
-                <option value={1}>Contas fixas</option>
-                <option value={2}>Alimentação</option>
-                <option value={3}>Aluguel</option>
-                <option value={4}>Conta Telefone</option>
-                <option value={5}>Saúde</option>
-                <option value={6}>Vestuário</option>
-                <option value={7}>Lazer</option>
-                <option value={8}>Transporte</option>
-                <option value={9}>Mercado</option>
-                <option value={10}>Eletrônicos</option>
-                <option value={11}>Salão</option>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((n, i) => (
+                  <option key={n} value={n}>
+                    {
+                      [
+                        "Contas fixas",
+                        "Alimentação",
+                        "Aluguel",
+                        "Conta Telefone",
+                        "Saúde",
+                        "Vestuário",
+                        "Lazer",
+                        "Transporte",
+                        "Mercado",
+                        "Eletrônicos",
+                        "Salão",
+                      ][i]
+                    }
+                  </option>
+                ))}
                 {categorias.map((cat) => (
                   <option key={cat.idCategoria} value={cat.idCategoria}>
                     {cat.categoria}
@@ -130,11 +147,7 @@ export default function LancamentosPage() {
         </div>
 
         {/* Modal do formulário */}
-        {showForm && (
-          <LancamentoForm
-            onClose={() => setShowForm(false)}
-          />
-        )}
+        {showForm && <LancamentoForm onClose={() => setShowForm(false)} />}
       </main>
     </div>
   );

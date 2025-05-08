@@ -205,10 +205,10 @@ export default function LancamentosForm({ onClose }: LancamentosFormProps) {
         </div>
       </form>
 
-      {/* Modal de Nova Categoria */}
+      {/* Cadastro de categoria */}
     
       {showCategoriaModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-20">
+        <div className="fixed inset-0 backdrop-blur-sm flex justify-center items-center z-10">
           <div className="bg-white p-6 rounded-lg shadow-lg w-80">
             <h3 className="text-lg font-semibold mb-4 text-gray-800">Nova Categoria</h3>
 
