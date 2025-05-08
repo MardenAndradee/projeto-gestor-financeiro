@@ -111,7 +111,7 @@ public class UsuariosService implements UserDetailsService {
 
             if (perfilAtualizarDTO.celular().isBlank() ){
                 usuario.setCelular(perfilAtualizarDTO.celular());
-            }else if(perfilAtualizarDTO.celular().length() >= 11) {
+            }else if(perfilAtualizarDTO.celular().length() >= 11){
                 usuario.setCelular(perfilAtualizarDTO.celular());
             }else {
                 throw new IllegalArgumentException("Telefone invalido");
