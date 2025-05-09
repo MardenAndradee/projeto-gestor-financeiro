@@ -47,8 +47,7 @@ export default function LancamentosForm({ onClose }: LancamentosFormProps) {
 
   useEffect(() => {
     setData(obterDataHoje())
-    
-  }, [data]);
+  }, []);
 
   const [showCategoriaModal, setShowCategoriaModal] = useState(false);
   const [novaCategoria, setNovaCategoria] = useState("");
