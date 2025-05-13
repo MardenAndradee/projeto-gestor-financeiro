@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import logoVerde from "../public/logo_verde.png";
+import icone from "../public/icone.png";
 
 export default function Navbar({
   collapsed,
@@ -76,7 +76,7 @@ export default function Navbar({
 
   return (
     <>
-      {/* ✅ Topbar com borda */}
+      {/* Topbar com borda */}
       <header className="w-full fixed top-0 left-0 z-30 h-14 flex items-center justify-between px-4 bg-[#EDF3FB] border-b border-gray-300">
         {/* Botão de controle sidebar */}
         <button
@@ -96,9 +96,9 @@ export default function Navbar({
         {/* Logo central */}
         <div className="flex-grow text-center">
           <Image
-            src={logoVerde}
+            src={icone}
             alt="Logo"
-            width={100}
+            width={70}
             height={40}
             className="mx-auto"
           />
@@ -113,7 +113,7 @@ export default function Navbar({
         </button>
       </header>
 
-      {/* ✅ Sidebar - Desktop com fundo igual à página */}
+      {/* Sidebar - Desktop */}
       <aside
         className={`hidden md:flex flex-col bg-[#ffffff] border-r transition-all duration-300 ease-in-out 
         ${collapsed ? "w-16" : "w-64"} h-screen fixed top-0 left-0 z-20 pt-14`}
@@ -122,7 +122,7 @@ export default function Navbar({
         <SidebarContent />
       </aside>
 
-      {/* ✅ Sidebar - Mobile com mesmo fundo */}
+      {/* Sidebar - Mobile */}
       {isMobile && (
         <aside
           className={`fixed top-14 left-0 h-screen z-50 bg-[#EDF3FB] border-r transition-transform duration-300 ease-in-out 
