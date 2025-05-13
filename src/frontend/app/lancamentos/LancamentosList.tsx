@@ -24,7 +24,7 @@ type Filtros = {
 };
 
 export default function LancamentoList({ filtros }: { filtros: Filtros }) {
-  const { lancamentos, handleGetLancamentos, handleDeleteLancamento, handleEditLancamento } = useLancamentos();
+  const { lancamentos, handleGetLancamentos } = useLancamentos();
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
@@ -58,18 +58,18 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-lg">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center flex-wrap gap-2 mb-4">
         <h2 className="text-xl font-bold text-gray-800">Meus Lançamentos</h2>
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2 justify-end">
           <button
             onClick={() => setShowForm(true)}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+            className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm"
           >
             Adicionar
           </button>
           <button
             onClick={handleExportarExcel}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm"
           >
             Exportar Excel
           </button>
@@ -81,7 +81,10 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
       ) : Array.isArray(lancamentos) ? (
         <ul className="space-y-3">
           {lancamentos.map((item, index) => (
-            <li key={index} className="p-4 border-b border-gray-200 flex justify-between">
+            <li
+              key={index}
+              className="p-4 border-b border-gray-200 flex justify-between items-center"
+            >
               <div>
                 <p className="text-gray-800 font-medium">{item.descricao}</p>
                 <span className="text-gray-500 text-sm">
@@ -90,7 +93,24 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
                   {item.qtdParcelas > 1 ? ` | ${item.nParcela} / ${item.qtdParcelas}` : ""}
                 </span>
               </div>
-              <span className="text-green-600 font-semibold">R$ {item.valor.toFixed(2)}</span>
+
+              <div className="flex items-center space-x-4">
+                <span className="text-green-600 font-semibold">R$ {item.valor.toFixed(2)}</span>
+
+                <button
+                  title="Editar"
+                  className="text-lg hover:text-blue-600 transition"
+                >
+                  ✏️
+                </button>
+
+                <button
+                  title="Excluir"
+                  className="text-lg hover:text-red-600 transition"
+                >
+                  🗑️
+                </button>
+              </div>
             </li>
           ))}
         </ul>
