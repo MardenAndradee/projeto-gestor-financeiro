@@ -37,7 +37,7 @@ public class Usuarios implements Serializable, UserDetails {
     private String celular;
 
 
-    @Column(name = "login",length = 50,nullable = true,unique = true)
+    @Column(name = "login",length = 50,nullable = false,unique = true)
 
     private String login;
 

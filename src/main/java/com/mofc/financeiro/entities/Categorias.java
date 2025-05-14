@@ -1,6 +1,7 @@
 package com.mofc.financeiro.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 
@@ -12,6 +13,8 @@ public class Categorias implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long idCategoria;
+
+
     private String categoria;
     @ManyToOne(optional = true)
     @JoinColumn(name="usuario_id")

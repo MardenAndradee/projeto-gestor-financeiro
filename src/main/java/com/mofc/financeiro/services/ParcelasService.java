@@ -2,9 +2,8 @@ package com.mofc.financeiro.services;
 
 import com.mofc.financeiro.dtos.ParcelasDTO;
 import com.mofc.financeiro.entities.Parcelas;
+import com.mofc.financeiro.exceptions.ValidacacaoException;
 import com.mofc.financeiro.repositories.ParcelasRepository;
-import com.mofc.financeiro.services.exceptions.ExceptionDelete;
-import com.mofc.financeiro.services.exceptions.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
@@ -22,7 +21,7 @@ public class ParcelasService {
 
     public Parcelas findById(Long id){
         Optional<Parcelas> parcelas = this.parcelasRepository.findById(id);
-        return parcelas.orElseThrow(() -> new ObjectNotFoundException(
+        return parcelas.orElseThrow(() -> new ValidacacaoException(
                 "Parcela não encontrada"
         ));
     }
@@ -50,16 +49,18 @@ public class ParcelasService {
         try{
             this.parcelasRepository.deleteById(id);
         }catch (Exception e){
-            throw new ExceptionDelete("Essa parcela não existe");
+            throw new ValidacacaoException("Essa parcela não existe");
         }
     }
 
     public List<ParcelasDTO> filtrarParcelas(LocalDate dataInicial, LocalDate dataFinal, Long categoriaId, Long idUsuario){
+        if(dataFinal.isBefore(dataInicial)){
+            throw new IllegalArgumentException("Data final não pode ser menor que a inicial");
+        }
         if (categoriaId != null){
             return parcelasRepository.findByMesAndCategoriaAndUsuario(dataInicial, dataFinal,categoriaId,idUsuario);
         } else {
             return parcelasRepository.findByMesAndUsuario(dataInicial, dataFinal, idUsuario);
         }
-
     }
 }

@@ -54,14 +54,25 @@ export default function LancamentosForm({ onClose }: LancamentosFormProps) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await handleLancamento();
-    onClose();
+
+    const sucesso = await handleLancamento();
+
+    if(sucesso){
+      onClose();
+    }
+    
   };
 
   const handleAddCategoria = async () => {
-      await handleCategorias();
+      const sucesso = await handleCategorias();
       setNovaCategoria("");
-      setShowCategoriaModal(false);
+      setShowCategoriaModal;
+      if(sucesso == true){
+        setNovaCategoria("");
+        setShowCategoriaModal(false)
+      }else{
+        setShowCategoriaModal(true)
+      }
     
   };
 
