@@ -2,11 +2,12 @@ package com.mofc.financeiro.services;
 
 import com.mofc.financeiro.entities.Despesas;
 import com.mofc.financeiro.entities.Parcelas;
+import com.mofc.financeiro.exceptions.ValidacacaoException;
 import com.mofc.financeiro.repositories.CategoriasRepository;
 import com.mofc.financeiro.repositories.DespesasRepository;
 import com.mofc.financeiro.repositories.ParcelasRepository;
 import com.mofc.financeiro.repositories.UsuariosRepository;
-import com.mofc.financeiro.services.exceptions.ObjectNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,7 @@ public class DespesasService {
 
     public Despesas findById(Long idDespesa){
         Optional<Despesas> despesas = this.despesasRepository.findById(idDespesa);
-        return despesas.orElseThrow(() -> new ObjectNotFoundException(
+        return despesas.orElseThrow(() -> new ValidacacaoException(
                 "Despesa não encontrada"
         ));
     }

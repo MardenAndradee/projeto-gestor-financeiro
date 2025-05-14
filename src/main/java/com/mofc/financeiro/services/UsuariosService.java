@@ -9,7 +9,6 @@ import com.mofc.financeiro.exceptions.RecursoNaoEncontradoException;
 import com.mofc.financeiro.exceptions.RegistrarUsuarioException;
 import com.mofc.financeiro.exceptions.ValidacacaoException;
 import com.mofc.financeiro.repositories.UsuariosRepository;
-import com.mofc.financeiro.services.exceptions.ExceptionDelete;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +81,7 @@ public class UsuariosService implements UserDetailsService {
         try{
             this.usuariosRepository.deleteById(id);
         }catch (Exception e){
-            throw new ExceptionDelete("Este usuario não existe");
+            throw new ValidacacaoException("Este usuario não existe");
         }
     }
 

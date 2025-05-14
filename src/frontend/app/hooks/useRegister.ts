@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
+import { toast } from "react-toastify";
 
 export function useRegister() {
   const [nome, setNome] = useState("");
@@ -18,7 +19,7 @@ export function useRegister() {
       setError("As senhas não coincidem");
       setSenha("");
       setConfirmarSenha("");
-      alert("Senhas não coincidem")
+      toast.error("Senhas não coincidem")
       return;
     }
 
@@ -47,13 +48,13 @@ export function useRegister() {
     if (!response.ok) {
       const errorMessage = data?.message || "Erro no cadastro";
       setError(errorMessage);
-      alert(errorMessage);
+      toast.error(errorMessage);
       return;
     }
 
       
       setSuccess("Cadastro realizado com sucesso!");
-      alert("Usuário cadastrado com sucesso!");
+      toast.success("Usuário cadastrado com sucesso!");
 
       setNome("");
       setNumero("");
@@ -66,7 +67,7 @@ export function useRegister() {
 
     } catch (err) {
       setError( error || "Erro ao realizar o cadastro");
-      alert(error || "Erro ao realizar cadastro");
+      toast.error(error || "Erro ao realizar cadastro");
     }
   };
 
