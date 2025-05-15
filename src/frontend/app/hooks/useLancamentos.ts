@@ -1,6 +1,8 @@
 "use client";
 import { AlertTriangle } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 
 function obterDataHoje() {
   const hoje = new Date();
@@ -9,10 +11,11 @@ function obterDataHoje() {
 }
 
 export function useLancamentos() {
+  const [idParcela, setIdParcela] = useState(Number);
   const [descricao, setdescricao] = useState("");
   const [valor, setValor] = useState("");
   const [categoria, setCategoria] = useState("Contas Fixas");
-  const [idCategoria, setIdCategoria] = useState("1");
+  const [idCategoria, setIdCategoria] = useState(0);
   const [data, setData] = useState(obterDataHoje());
   const [formaPagamento, setFormaPagamento] = useState("Débito");
   const [qtdParcelas, setQtdParcelas] = useState(1);
@@ -20,13 +23,15 @@ export function useLancamentos() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [lancamentos, setLancamentos] = useState<any[]>([]);
+  const router = useRouter();
 
   //função para pegar id do usuario
   async function buscarUsuario(){
 
     const token = localStorage.getItem("token");
-      if (!token) throw new Error("Usuário não autenticado");
-
+    if (!token) {
+      router.push("/login");
+    }
     const getUsuario = await fetch(`http://localhost:8080/me`,{
     method: "GET",
     headers:{
@@ -75,7 +80,36 @@ export function useLancamentos() {
       });
 
       const data = await response.json();
-      setLancamentos(data); // Atualiza o estado com os lançamentos obtidos
+      setLancamentos(data); 
+    } catch (err) {
+      console.error("Erro ao buscar lançamentos:", err);
+      setError("Erro ao buscar lançamentos.");
+    }
+  };
+
+  // função pra listar uma despesa
+   const handleGetOneLancamento = async (idParcela: number) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Usuário não autenticado");
+
+      const idUsuario = await buscarUsuario();
+
+      const response = await fetch(`http://localhost:8080/parcelas/${idParcela}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      setLancamentos(data); 
+      console.log("Resposta da API:", data);
+
+      
+      return data[0];
+
     } catch (err) {
       console.error("Erro ao buscar lançamentos:", err);
       setError("Erro ao buscar lançamentos.");
@@ -132,7 +166,7 @@ export function useLancamentos() {
         if (!token) throw new Error("Usuário não autenticado");
 
 
-      const response = await fetch(`http://localhost:8080/despesa/${idParcela}`, {
+      const response = await fetch(`http://localhost:8080/parcelas/${idParcela}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -140,16 +174,11 @@ export function useLancamentos() {
         },
       });
 
-      if (!response.ok) {
-        throw new Error("Erro no cadastro");
-      }
-
-      const dataResponse = await response.json();
       setSuccess("Lançamento excluído com sucesso!");
       alert("Lançamento excluído com sucesso!");
     } catch (err) {
-      setError("Erro ao realizar o cadastro");
-      alert("ERRO")
+      setError("Erro ao deletar");
+      alert("ERRO ao deletar")
     }
   };
 
@@ -158,44 +187,58 @@ export function useLancamentos() {
 
     try {
 
+
         const token = localStorage.getItem("token");
         if (!token) throw new Error("Usuário não autenticado");
 
         const idUsuario = await buscarUsuario();
 
 
-      const response = await fetch(`http://localhost:8080/despesa/${idParcela}`, {
+      const response = await fetch(`http://localhost:8080/parcelas/${idParcela}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
+          idParcela,
           descricao,
           valor,
-          categoria: {idCategoria},
-          data,
-          formaPagamento,
-          qtdParcelas,
-          usuario: {idUsuario}
+          categoria: idCategoria.toString(),
+          dataParcela: data,
+          formaPagamento
         }),
       });
 
       if (!response.ok) {
-        throw new Error("Erro no cadastro");
-      }
+  const errorText = await response.text(); // captura o erro da API
+  throw new Error(`Erro da API: ${response.status} - ${errorText}`);
+}
 
       const dataResponse = await response.json();
-      setSuccess("Lançamento realizado com sucesso!");
-      alert("Lançamento cadastrado com sucesso!");
+
+      const parcela = Array.isArray(dataResponse) ? dataResponse[0] : dataResponse;
+
+    // Atualizando os estados com os valores da parcela
+    setIdParcela(parcela.idParcela);
+    setdescricao(parcela.descricao || "");
+    setValor(parcela.valor || "");
+    setCategoria(parcela.categoria || "");
+    setData(parcela.dataParcela || obterDataHoje());
+    setFormaPagamento(parcela.formaPagamento || "Débito");
+
+    setLancamentos([parcela]);
+
+      setSuccess("Lançamento editado com sucesso!");
+      alert("Lançamento editado com sucesso!");
     } catch (err) {
       setError("Erro ao realizar o cadastro");
-      alert("ERRO")
     }
   };
 
 
   return {
+    idParcela, setIdParcela,
     descricao, setdescricao,
     valor, setValor,
     categoria, setCategoria,
@@ -210,6 +253,7 @@ export function useLancamentos() {
     handleGetLancamentos,
     handleDeleteLancamento,
     handleEditLancamento,
+    handleGetOneLancamento,
     lancamentos,
   };
 }

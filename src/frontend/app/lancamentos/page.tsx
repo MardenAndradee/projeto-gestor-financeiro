@@ -13,6 +13,7 @@ export default function LancamentosPage() {
   const [lancamentos, setLancamentos] = useState([]);
   const { categorias, handleGetCategorias } = useCategorias();
   const router = useRouter();
+  const [idEditando, setIdEditando] = useState<number | null>(null);
 
   useEffect(() => {
     handleGetCategorias();
@@ -147,7 +148,8 @@ export default function LancamentosPage() {
         </div>
 
         {/* Modal do formulário */}
-        {showForm && <LancamentoForm onClose={() => setShowForm(false)} />}
+        {showForm && <LancamentoForm onClose={() => setShowForm(false)}
+        idParcela ={idEditando} />}
       </main>
     </div>
   );

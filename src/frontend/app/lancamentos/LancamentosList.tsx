@@ -5,6 +5,7 @@ import { useLancamentos } from "../hooks/useLancamentos";
 import LancamentoForm from "./LancamentosForm";
 
 type Lancamento = {
+  idParcela: number;
   descricao: string;
   valor: number;
   categoria: {
@@ -24,8 +25,19 @@ type Filtros = {
 };
 
 export default function LancamentoList({ filtros }: { filtros: Filtros }) {
-  const { lancamentos, handleGetLancamentos } = useLancamentos();
+  const {lancamentos, handleGetLancamentos, handleDeleteLancamento, handleGetOneLancamento} = useLancamentos();
   const [showForm, setShowForm] = useState(false);
+  const [idEditando, setIdEditando] = useState<number | null>(null);
+  
+  const handleAdicionar = () => {
+    setIdEditando(null); // Modo adicionar
+    setShowForm(true);
+  };
+
+  const handleEditar = (idParcela: number) => {
+    setIdEditando(idParcela); // Modo edição
+    setShowForm(true);
+  };
 
   useEffect(() => {
     handleGetLancamentos(filtros);
@@ -54,7 +66,8 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
       console.error(error);
       alert("Erro ao exportar o Excel.");
     }
-  };
+};
+  
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-lg">
@@ -62,7 +75,7 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
         <h2 className="text-xl font-bold text-gray-800">Meus Lançamentos</h2>
         <div className="flex flex-wrap gap-2 justify-end">
           <button
-            onClick={() => setShowForm(true)}
+            onClick={() => handleAdicionar()}
             className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm"
           >
             Adicionar
@@ -98,6 +111,7 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
                 <span className="text-green-600 font-semibold">R$ {item.valor.toFixed(2)}</span>
 
                 <button
+                  onClick={() => handleEditar(item.idParcela)}
                   title="Editar"
                   className="text-lg hover:text-blue-600 transition"
                 >
@@ -105,6 +119,7 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
                 </button>
 
                 <button
+                  onClick={() => handleDeleteLancamento(item.idParcela)}
                   title="Excluir"
                   className="text-lg hover:text-red-600 transition"
                 >
@@ -118,7 +133,8 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
         <p className="text-red-500">Erro ao carregar lançamentos.</p>
       )}
 
-      {showForm && <LancamentoForm onClose={() => setShowForm(false)} />}
+      {showForm && <LancamentoForm onClose={() => setShowForm(false)}
+      idParcela ={idEditando} />}
     </div>
   );
 }
