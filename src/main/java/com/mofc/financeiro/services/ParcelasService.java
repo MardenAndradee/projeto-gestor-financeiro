@@ -1,7 +1,12 @@
 package com.mofc.financeiro.services;
 
+import com.mofc.financeiro.dtos.AtualizarParcelaDTO;
 import com.mofc.financeiro.dtos.ParcelasDTO;
+import com.mofc.financeiro.entities.Categorias;
+import com.mofc.financeiro.entities.Despesas;
 import com.mofc.financeiro.entities.Parcelas;
+import com.mofc.financeiro.repositories.CategoriasRepository;
+import com.mofc.financeiro.repositories.DespesasRepository;
 import com.mofc.financeiro.repositories.ParcelasRepository;
 import com.mofc.financeiro.services.exceptions.ExceptionDelete;
 import com.mofc.financeiro.services.exceptions.ObjectNotFoundException;
@@ -20,11 +25,21 @@ public class ParcelasService {
     @Autowired
     ParcelasRepository parcelasRepository;
 
+    @Autowired
+    DespesasRepository despesasRepository;
+
+    @Autowired
+    CategoriasRepository categoriasRepository;
+
     public Parcelas findById(Long id){
         Optional<Parcelas> parcelas = this.parcelasRepository.findById(id);
         return parcelas.orElseThrow(() -> new ObjectNotFoundException(
                 "Parcela não encontrada"
         ));
+    }
+
+    public List<ParcelasDTO> findByIdDTO(Long idParcela){
+        return parcelasRepository.findByIdParcela(idParcela);
     }
 
     public List<Parcelas> getAllParcelas(){
@@ -61,5 +76,30 @@ public class ParcelasService {
             return parcelasRepository.findByMesAndUsuario(dataInicial, dataFinal, idUsuario);
         }
 
+    }
+
+    @Transactional
+    public void atualizarParcela(Long idParcela, AtualizarParcelaDTO dto) {
+        Parcelas parcela = parcelasRepository.findById(idParcela)
+                .orElseThrow(() -> new RuntimeException("Parcela não encontrada"));
+
+        Despesas despesa = parcela.getDespesa();
+
+        // Atualiza os dados da entidade Despesa
+        despesa.setDescricao(dto.getDescricao());
+        despesa.setFormaPagamento(dto.getFormaPagamento());
+        Categorias categoria = categoriasRepository.findById(Long.parseLong(dto.getCategoria()))
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+
+        despesa.setCategoria(categoria);
+
+        // Atualiza os dados da entidade Parcelas
+        parcela.setValor(dto.getValor());
+        parcela.setDataParcela(dto.getDataParcela());
+
+        // Repositórios JPA fazem flush automático no final da transação,
+        // mas se quiser garantir, pode chamar save:
+        despesasRepository.save(despesa);
+        parcelasRepository.save(parcela);
     }
 }

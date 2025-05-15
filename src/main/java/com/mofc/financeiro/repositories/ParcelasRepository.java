@@ -24,19 +24,19 @@ public interface ParcelasRepository extends JpaRepository<Parcelas, Long> {
     //List<Parcelas> findByMesAndUsuario(@Param("mes") int mes, @Param("usuarioId") Long usuarioId);
 
     @Query("select new com.mofc.financeiro.dtos.ParcelasDTO(" +
-            "p.idParcela, d.descricao, p.dataParcela, d.formaPagamento, c.categoria, p.nParcela, d.qtdParcelas, p.valor) " +
+            "p.idParcela, d.descricao, p.dataParcela, d.formaPagamento, c.idCategoria, c.categoria, p.nParcela, d.qtdParcelas, p.valor) " +
             "from Parcelas p " +
             "join p.despesa d " +
             "join d.categoria c")
     List<ParcelasDTO> findAllParcelasDTO();
 
     @Query("select new com.mofc.financeiro.dtos.ParcelasDTO(" +
-            "p.idParcela, d.descricao, p.dataParcela, d.formaPagamento, c.categoria, p.nParcela, d.qtdParcelas, p.valor) " +
+            "p.idParcela, d.descricao, p.dataParcela, d.formaPagamento, c.idCategoria, c.categoria, p.nParcela, d.qtdParcelas, p.valor) " +
             "from Parcelas p " +
             "join p.despesa d " +
             "join d.categoria c " +
             "where p.dataParcela >= :dataInicial and p.dataParcela <= :dataFinal " +
-            "and c.id = :categoriaId " +
+            "and c.idCategoria = :categoriaId " +
             "and d.usuario.id = :usuarioId")
     List<ParcelasDTO> findByMesAndCategoriaAndUsuario(@Param("dataInicial")LocalDate dataInicial,
                                                       @Param("dataFinal") LocalDate dataFinal,
@@ -45,7 +45,7 @@ public interface ParcelasRepository extends JpaRepository<Parcelas, Long> {
 
 
     @Query("select new com.mofc.financeiro.dtos.ParcelasDTO(" +
-            "p.idParcela, d.descricao, p.dataParcela, d.formaPagamento, c.categoria, p.nParcela, d.qtdParcelas, p.valor) " +
+            "p.idParcela, d.descricao, p.dataParcela, d.formaPagamento, c.idCategoria, c.categoria, p.nParcela, d.qtdParcelas, p.valor) " +
             "from Parcelas p " +
             "join p.despesa d " +
             "join d.categoria c " +
@@ -53,5 +53,13 @@ public interface ParcelasRepository extends JpaRepository<Parcelas, Long> {
     List<ParcelasDTO> findByMesAndUsuario(@Param("dataInicial")LocalDate dataInicial,
                                           @Param("dataFinal") LocalDate dataFinal,
                                           @Param("usuarioId") Long usuarioId);
+
+    @Query("select new com.mofc.financeiro.dtos.ParcelasDTO(" +
+            "p.idParcela, d.descricao, p.dataParcela, d.formaPagamento, c.idCategoria, c.categoria, p.nParcela, d.qtdParcelas, p.valor) " +
+            "from Parcelas p " +
+            "join p.despesa d " +
+            "join d.categoria c " +
+            "where p.idParcela = :idParcela")
+    List<ParcelasDTO> findByIdParcela(@Param("idParcela")Long idParcela);
 
 }

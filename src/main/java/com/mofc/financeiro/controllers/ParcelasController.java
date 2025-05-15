@@ -1,5 +1,6 @@
 package com.mofc.financeiro.controllers;
 
+import com.mofc.financeiro.dtos.AtualizarParcelaDTO;
 import com.mofc.financeiro.dtos.ParcelasDTO;
 import com.mofc.financeiro.entities.Parcelas;
 import com.mofc.financeiro.services.ParcelasService;
@@ -26,20 +27,30 @@ public class ParcelasController {
     }
 
     @GetMapping("/parcelas/{id}")
-    public ResponseEntity<Object> getOneParcela(@PathVariable(value="id")long id){
-        Parcelas parcelas = this.parcelasService.findById(id);
+    public ResponseEntity<List<ParcelasDTO>>getOneParcela(
+            @PathVariable(value = "id") Optional<Long> idParcela){
+
+        List<ParcelasDTO> parcelas = this.parcelasService.findByIdDTO(idParcela.orElse(null));
         return ResponseEntity.ok().body(parcelas);
     }
 
-
-
-    @PutMapping("/parcelas/{id}")
-    public ResponseEntity<Object> updateParcela(@PathVariable(value="id") long id,
-                                                @RequestBody @Valid Parcelas parcelas){
-        parcelas.setIdParcela(id);
-        this.parcelasService.update(parcelas);
+    @PutMapping("/parcelas/{idParcela}")
+    public ResponseEntity<Void> atualizarLancamento(
+            @PathVariable Long idParcela,
+            @RequestBody AtualizarParcelaDTO dto
+    ) {
+        parcelasService.atualizarParcela(idParcela, dto);
         return ResponseEntity.noContent().build();
     }
+
+
+//    @PutMapping("/parcelas/{id}")
+//    public ResponseEntity<Object> updateParcela(@PathVariable(value="id") long id,
+//                                                @RequestBody @Valid Parcelas parcelas){
+//        parcelas.setIdParcela(id);
+//        this.parcelasService.update(parcelas);
+//        return ResponseEntity.noContent().build();
+//    }
 
 
 

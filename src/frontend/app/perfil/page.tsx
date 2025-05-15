@@ -23,12 +23,15 @@ export default function PerfilPage() {
   const router = useRouter();
 
   useEffect(() => {
+  
     const token = localStorage.getItem("token");
+
     if (!token) {
-      console.error("Token JWT não encontrado");
       router.push("/login");
-      return;
     }
+  
+
+  
 
     fetch("http://localhost:8080/usuario/perfil", {
       method: "GET",
@@ -54,6 +57,7 @@ export default function PerfilPage() {
       })
       .finally(() => setLoading(false));
   }, []);
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

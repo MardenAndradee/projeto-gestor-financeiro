@@ -4,7 +4,7 @@ import { useState } from "react";
 
 
 export function useCategorias() {
-  const [idCategoria, setIdCategoria] = useState("");
+  const [idCategoria, setIdCategoria] = useState('');
   const [categoria, setCategoria] = useState("");
   const [usuario, setUsuario] = useState("");
   const [error, setError] = useState("");
@@ -57,6 +57,33 @@ export function useCategorias() {
 
       const data = await response.json();
       setCategorias(data); // Atualiza o estado com os categorias obtidos
+    } catch (err) {
+      console.error("Erro ao buscar Categorias:", err);
+      setError("Erro ao buscar Categorias.");
+    }
+  };
+
+  // função pra pegar uma categoria
+   const handleGetCategoriaById = async (idCategoria: number) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Usuário não autenticado");
+
+      const idUsuario = await buscarUsuario();
+
+
+      const response = await fetch(`http://localhost:8080/categoria/${idCategoria}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      setCategorias(data); // Atualiza o estado com os categorias obtidos
+      return data[0];
+
     } catch (err) {
       console.error("Erro ao buscar Categorias:", err);
       setError("Erro ao buscar Categorias.");
@@ -139,6 +166,7 @@ export function useCategorias() {
     handleCategorias,
     handleGetCategorias,
     handleDeleteCategorias,
+    handleGetCategoriaById,
     categorias,
   };
 }

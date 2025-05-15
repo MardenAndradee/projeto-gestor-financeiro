@@ -11,6 +11,7 @@ public record ParcelasDTO(
         String descricao,
         @NotNull @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") LocalDate dataParcela,
         String formaPagamento,
+        Long idCategoria,
         String categoria,
         int nParcela,
         int qtdParcelas,

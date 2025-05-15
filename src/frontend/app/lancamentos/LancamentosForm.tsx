@@ -5,9 +5,10 @@ import { useCategorias } from "../hooks/useCategorias";
 
 type LancamentosFormProps = {
   onClose: () => void;
+  idParcela: number | null;
 };
 
-export default function LancamentosForm({ onClose }: LancamentosFormProps) {
+export default function LancamentosForm({ onClose, idParcela }: LancamentosFormProps) {
   const {
     descricao, setdescricao,
     valor, setValor,
@@ -19,6 +20,8 @@ export default function LancamentosForm({ onClose }: LancamentosFormProps) {
     error,
     success,
     handleLancamento,
+    handleGetOneLancamento,
+    handleEditLancamento,
     lancamentos,
   } = useLancamentos();
 
@@ -26,8 +29,10 @@ export default function LancamentosForm({ onClose }: LancamentosFormProps) {
     categorias,
     categoria, setCategoria,
     handleGetCategorias,
-    handleCategorias
+    handleCategorias,
+    handleGetCategoriaById
   } = useCategorias();
+  const [oneCategoria, setOneCategoria] = useState<string>(''); 
 
   useEffect(() => {
     handleGetCategorias();
@@ -39,23 +44,60 @@ export default function LancamentosForm({ onClose }: LancamentosFormProps) {
     }
   }, [formaPagamento]);
 
+  useEffect(() => {
+  if (idParcela !== null) {
+    handleGetOneLancamento(idParcela)
+      .then((lancamentos) => {
+        setdescricao(lancamentos.descricao);
+        setValor(lancamentos.valor);
+        setIdCategoria(lancamentos.idCategoria);
+        setData(lancamentos.dataParcela); 
+        setFormaPagamento(lancamentos.formaPagamento);
+        setQtdParcelas(lancamentos.qtdParcelas || 1);
+
+    })
+      
+  } else {
+    setdescricao('');
+    setValor('');
+    setCategoria('Contas Fixas');
+    setData(obterDataHoje());
+    setFormaPagamento('Débito');
+    setQtdParcelas(1);
+    setUsuario('');
+  }
+}, [idParcela]);
+
+useEffect(() => {
+  if (idCategoria) {
+    handleGetCategoriaById(idCategoria).then((categoriaData) => {
+      if (categoriaData && categoriaData.categoria) {
+        setCategoria(categoriaData.categoria); // Preenche o nome da categoria
+      }
+    });
+  }
+}, []);
+
   function obterDataHoje() {
     const hoje = new Date();
     const dataHoje = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
     return dataHoje.toISOString().split("T")[0]; // retorna "YYYY-MM-DD"
   }
 
-  useEffect(() => {
-    setData(obterDataHoje())
-  }, []);
 
+  
   const [showCategoriaModal, setShowCategoriaModal] = useState(false);
   const [novaCategoria, setNovaCategoria] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await handleLancamento();
-    onClose();
+    if (idParcela !== null) {
+      await handleEditLancamento(idParcela);
+      onClose();
+    }else{
+      await handleLancamento();
+      onClose();
+    }
   };
 
   const handleAddCategoria = async () => {
@@ -124,7 +166,7 @@ export default function LancamentosForm({ onClose }: LancamentosFormProps) {
             <select
           name="idCategoria"
           value={idCategoria}
-          onChange={(e) => setIdCategoria(e.target.value)}
+          onChange={(e) => setIdCategoria(Number(e.target.value))}
           className="w-full mb-2 px-4 py-2 border rounded-lg bg-white text-gray-400"
         >
           <option value={1}>Contas fixas</option>
@@ -138,11 +180,11 @@ export default function LancamentosForm({ onClose }: LancamentosFormProps) {
           <option value={9}>Mercado</option>
           <option value={10}>Eletrônicos</option>
           <option value={11}>Salão</option>
-          {categorias.map((cat) => (
-          <option key={cat.idCategoria} value={cat.idCategoria}>
-            {cat.categoria}
-          </option>
-        ))}
+          {(categorias || []).map((cat) => (
+    <option key={cat.idCategoria} value={cat.idCategoria}>
+      {cat.categoria}
+    </option>
+  ))}
         </select>
               <button
                 type="button"
@@ -165,6 +207,7 @@ export default function LancamentosForm({ onClose }: LancamentosFormProps) {
               name="formaPagamento"
               value={formaPagamento}
               onChange={(e) => setFormaPagamento(e.target.value)}
+              disabled={idParcela !== null}
               className="w-full mb-3 px-4 py-2 border rounded-lg bg-white text-gray-400"
             >
               <option value={"Débito"}>Débito</option>
@@ -180,6 +223,7 @@ export default function LancamentosForm({ onClose }: LancamentosFormProps) {
                 min="1"
                 value={qtdParcelas}
                 onChange={handleChange}
+                disabled={idParcela !== null}
                 className="w-full mb-3 px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400"
                 placeholder="Quantidade de Parcelas"
               />
