@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 
 
@@ -113,15 +114,18 @@ export function useCategorias() {
       });
 
       if (!response.ok) {
-        throw new Error("Erro no cadastro");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Erro ao cadastrar")
       }
 
       const dataResponse = await response.json();
       setSuccess("Categoria cadastrada com sucesso!");
-      alert("Categoria cadastrada com sucesso!");
+      toast.success("Categoria cadastrada com sucesso!");
+      return true;
+      
     } catch (err) {
-      setError("Erro ao realizar o cadastro");
-      alert("ERRO ao realizar cadastro, useCategorias")
+      toast.error(err instanceof Error ? err.message : "Erro ao cadastrar categoria")
+      return false;
     }
   };
 

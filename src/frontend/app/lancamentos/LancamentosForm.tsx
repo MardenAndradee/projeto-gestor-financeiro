@@ -91,20 +91,23 @@ useEffect(() => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (idParcela !== null) {
+    const sucesso = await handleLancamento();
+     if (idParcela !== null) {
       await handleEditLancamento(idParcela);
       onClose();
     }else{
-      await handleLancamento();
+      const sucesso = await handleLancamento();
+
+    if(sucesso){
       onClose();
+    }
     }
   };
 
   const handleAddCategoria = async () => {
-      await handleCategorias();
+      const sucesso = await handleCategorias();
       setNovaCategoria("");
-      setShowCategoriaModal(false);
-    
+      setShowCategoriaModal;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
