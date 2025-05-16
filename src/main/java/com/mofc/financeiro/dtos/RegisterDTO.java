@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record RegisterDTO(
     @NotBlank(message = "Nome é obrigatorio")String nome,
-    @Email(message = "Email invalido") String email,
+    @NotBlank(message = "Email invalido") String email,
     String celular,
     String login,
     @NotBlank(message = "Senha deve ter no minimo 3 caracteres") String senha

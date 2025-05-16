@@ -1,9 +1,9 @@
 package com.mofc.financeiro.services;
 
+import com.mofc.financeiro.dtos.CategoriasDTO;
 import com.mofc.financeiro.entities.Categorias;
+import com.mofc.financeiro.exceptions.ValidacacaoException;
 import com.mofc.financeiro.repositories.CategoriasRepository;
-import com.mofc.financeiro.services.exceptions.ExceptionDelete;
-import com.mofc.financeiro.services.exceptions.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public class CategoriasService {
 
     public Categorias findById(Long id){
         Optional<Categorias> categorias = this.categoriasRepository.findById(id);
-        return categorias.orElseThrow(() -> new ObjectNotFoundException(
+        return categorias.orElseThrow(() -> new ValidacacaoException(
                 "Categoria não encontrada"
         ));
     }
@@ -52,7 +52,7 @@ public class CategoriasService {
         try{
             this.categoriasRepository.deleteById(id);
         }catch (Exception e){
-            throw new ExceptionDelete("Esta categoria não existe!");
+            throw new ValidacacaoException("Esta categoria não existe!");
         }
 
     }

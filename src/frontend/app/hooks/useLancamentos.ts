@@ -2,7 +2,7 @@
 import { AlertTriangle } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
+import { toast } from "react-toastify";
 
 function obterDataHoje() {
   const hoje = new Date();
@@ -24,6 +24,7 @@ export function useLancamentos() {
   const [success, setSuccess] = useState("");
   const [lancamentos, setLancamentos] = useState<any[]>([]);
   const router = useRouter();
+  
 
   //função para pegar id do usuario
   async function buscarUsuario(){
@@ -79,11 +80,15 @@ export function useLancamentos() {
         },
       });
 
-      const data = await response.json();
-      setLancamentos(data); 
+       const responseData = await response.json();
+
+      if(!response.ok){
+        throw new Error(responseData.message || "Erro ao filtrar")
+      }
+      
+      setLancamentos(responseData); 
     } catch (err) {
-      console.error("Erro ao buscar lançamentos:", err);
-      setError("Erro ao buscar lançamentos.");
+      toast.error(err instanceof Error ? err.message : "Erro ao filtrar");
     }
   };
 
@@ -110,14 +115,13 @@ export function useLancamentos() {
       
       return data[0];
 
-    } catch (err) {
-      console.error("Erro ao buscar lançamentos:", err);
-      setError("Erro ao buscar lançamentos.");
+    }catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao filtrar");
     }
   };
 
   // FUNÇÃO PARA CADASTRAR DESPESAS
-  const handleLancamento = async () => {
+  const handleLancamento = async (): Promise<boolean> => {
 
     try {
 
@@ -145,15 +149,17 @@ export function useLancamentos() {
       });
 
       if (!response.ok) {
-        throw new Error("Erro no cadastro");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Cadastro falhou");
       }
 
       const dataResponse = await response.json();
       setSuccess("Lançamento realizado com sucesso!");
-      alert("Lançamento cadastrado com sucesso!");
+      toast.success("Lançamento cadastrado com sucesso!");
+      return true;
     } catch (err) {
-      setError("Erro ao realizar o cadastro");
-      alert("ERRO")
+      toast.error(err instanceof Error ? err.message : "Erro inesperado")
+      return false;
     }
   };
 
@@ -257,3 +263,4 @@ export function useLancamentos() {
     lancamentos,
   };
 }
+

@@ -76,6 +76,8 @@ public class AuthenticationController {
         return ResponseEntity.ok("E-mail de redefinição enviado com sucesso!");
     }
 
+
+
     @PutMapping("/redefinir-senha")
     public ResponseEntity<String> atualizarSenha(
             @RequestHeader("Authorization") String authHeader,
@@ -107,8 +109,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO data)  {
-        if(this.usuariosRepository.findByLogin(data.login()).isPresent())
-            throw new RegistrarUsuarioException("Dados invalidos");
+        if(this.usuariosRepository.findByLogin(data.login()).isPresent());
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
         Usuarios newUsuario = new Usuarios(data.nome(), data.email(), data.celular(),
