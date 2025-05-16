@@ -91,7 +91,6 @@ useEffect(() => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const sucesso = await handleLancamento();
      if (idParcela !== null) {
       await handleEditLancamento(idParcela);
       onClose();
