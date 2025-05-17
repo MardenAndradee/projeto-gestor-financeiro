@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useLancamentos } from "../hooks/useLancamentos";
 import LancamentoForm from "./LancamentosForm";
+import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
 
 type Lancamento = {
   idParcela: number;
@@ -28,7 +29,7 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
   const {lancamentos, handleGetLancamentos, handleDeleteLancamento, handleGetOneLancamento} = useLancamentos();
   const [showForm, setShowForm] = useState(false);
   const [idEditando, setIdEditando] = useState<number | null>(null);
-  
+
   const handleAdicionar = () => {
     setIdEditando(null); // Modo adicionar
     setShowForm(true);
@@ -66,13 +67,12 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
       console.error(error);
       alert("Erro ao exportar o Excel.");
     }
-};
-  
+  };
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-lg">
       <div className="flex justify-between items-center flex-wrap gap-2 mb-4">
-        <h2 className="text-xl font-bold text-gray-800">Meus Lançamentos</h2>
+        <h2 className="text-xl font-bold font-mono text-gray-800">Meus Lançamentos</h2>
         <div className="flex flex-wrap gap-2 justify-end">
           <button
             onClick={() => handleAdicionar()}
@@ -84,7 +84,7 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
             onClick={handleExportarExcel}
             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm"
           >
-            Exportar Excel
+            Exportar
           </button>
         </div>
       </div>
@@ -92,43 +92,47 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
       {Array.isArray(lancamentos) && lancamentos.length === 0 ? (
         <p className="text-gray-500">Nenhum lançamento adicionado.</p>
       ) : Array.isArray(lancamentos) ? (
-        <ul className="space-y-3">
-          {lancamentos.map((item, index) => (
-            <li
-              key={index}
-              className="p-4 border-b border-gray-200 flex justify-between items-center"
-            >
-              <div>
-                <p className="text-gray-800 font-medium">{item.descricao}</p>
-                <span className="text-gray-500 text-sm">
-                  {new Date(item.dataParcela || item.data).toLocaleDateString("pt-BR")} -{" "}
-                  {typeof item.categoria === "object" ? item.categoria.idCategoria : item.categoria} | {item.formaPagamento}{" "}
-                  {item.qtdParcelas > 1 ? ` | ${item.nParcela} / ${item.qtdParcelas}` : ""}
-                </span>
-              </div>
+<ul className="space-y-3">
+  {lancamentos.map((item, index) => (
+    <li
+      key={index}
+      className="p-4 border-b border-gray-200 flex flex-col md:flex-row md:justify-between md:items-center gap-2"
+    >
+      <div className="flex-1">
+        <p className="text-gray-800 font-medium break-words">{item.descricao}</p>
+        <span className="text-gray-500 text-sm block mt-1">
+          {new Date(item.dataParcela || item.data).toLocaleDateString("pt-BR")} -{" "}
+          {typeof item.categoria === "object" ? item.categoria.idCategoria : item.categoria} | {item.formaPagamento}{" "}
+          {item.qtdParcelas > 1 ? ` | ${item.nParcela} / ${item.qtdParcelas}` : ""}
+        </span>
+      </div>
 
-              <div className="flex items-center space-x-4">
-                <span className="text-green-600 font-semibold">R$ {item.valor.toFixed(2)}</span>
+      <div className="flex justify-between md:justify-end items-center gap-4 min-w-[120px]">
+        <span className="text-green-600 font-semibold whitespace-nowrap">
+          R$ {item.valor.toFixed(2)}
+        </span>
 
-                <button
-                  onClick={() => handleEditar(item.idParcela)}
-                  title="Editar"
-                  className="text-lg hover:text-blue-600 transition"
-                >
-                  ✏️
-                </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => handleEditar(item.idParcela)}
+            title="Editar"
+            className="hover:text-blue-600 transition"
+          >
+            <PencilSquareIcon className="h-5 w-5 text-gray-600 hover:text-gray-700" />
+          </button>
 
-                <button
-                  onClick={() => handleDeleteLancamento(item.idParcela)}
-                  title="Excluir"
-                  className="text-lg hover:text-red-600 transition"
-                >
-                  🗑️
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+          <button
+            onClick={() => handleDeleteLancamento(item.idParcela)}
+            title="Excluir"
+            className="hover:text-red-600 transition"
+          >
+            <TrashIcon className="h-5 w-5 text-gray-600 hover:text-gray-700" />
+          </button>
+        </div>
+      </div>
+    </li>
+  ))}
+</ul>
       ) : (
         <p className="text-red-500">Erro ao carregar lançamentos.</p>
       )}
