@@ -71,7 +71,7 @@ export default function LancamentosPage() {
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Filtros */}
           <div className="bg-white p-4 rounded-lg shadow mb-6">
-            <h2 className="text-lg font-bold text-gray-800 mb-4">Filtros</h2>
+            <h2 className="text-xl font-bold font-mono text-gray-800 mb-4">Filtros</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <input
                 type="date"
@@ -128,13 +128,13 @@ export default function LancamentosPage() {
             <div className="flex flex-wrap justify-end gap-2">
               <button
                 onClick={handleRemoverFiltros}
-                className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg"
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
               >
                 Remover Filtros
               </button>
               <button
                 onClick={handleAdicionarFiltro}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
               >
                 Adicionar Filtro
               </button>

@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import icone from "../public/icone.png";
+import logo_verde from "../public/logo_verde.png";
 
 export default function Navbar({
   collapsed,
@@ -78,33 +78,34 @@ export default function Navbar({
     <>
       {/* Topbar com borda */}
       <header className="w-full fixed top-0 left-0 z-30 h-14 flex items-center justify-between px-4 bg-[#EDF3FB] border-b border-gray-300">
-        {/* Botão de controle sidebar */}
+        {/* botao de hamburguer sidebar */}
         <button
           onClick={() => {
-          if (isMobile) {
-          setMobileOpen(true);
-          } else {
-          setCollapsed(!collapsed);
-          }
-        }}
+  if (isMobile) {
+    setMobileOpen((prev) => !prev); // Alterna entre abrir e fechar
+  } else {
+    setCollapsed((prev) => !prev);
+  }
+}}
+
   className="text-gray-700 hover:text-green-600"
 >
   <Menu size={26} />
 </button>
 
 
-        {/* Logo central */}
+        {/* logo central */}
         <div className="flex-grow text-center">
           <Image
-            src={icone}
+            src={logo_verde}
             alt="Logo"
-            width={70}
-            height={40}
+            width={130}
+            height={20}
             className="mx-auto"
           />
         </div>
 
-        {/* Ícone de perfil */}
+        {/* icone de perfil */}
         <button
           onClick={() => router.push("/perfil")}
           className="text-gray-700 hover:text-green-600"
@@ -113,7 +114,7 @@ export default function Navbar({
         </button>
       </header>
 
-      {/* Sidebar - Desktop */}
+      {/* sidebar - pra pc */}
       <aside
         className={`hidden md:flex flex-col bg-[#ffffff] border-r transition-all duration-300 ease-in-out 
         ${collapsed ? "w-16" : "w-64"} h-screen fixed top-0 left-0 z-20 pt-14`}
@@ -122,7 +123,7 @@ export default function Navbar({
         <SidebarContent />
       </aside>
 
-      {/* Sidebar - Mobile */}
+      {/* sidebar - pra celular */}
       {isMobile && (
         <aside
           className={`fixed top-14 left-0 h-screen z-50 bg-[#EDF3FB] border-r transition-transform duration-300 ease-in-out 
