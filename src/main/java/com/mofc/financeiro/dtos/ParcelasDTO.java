@@ -17,3 +17,4 @@ public record ParcelasDTO(
         int qtdParcelas,
         double valor
 ) {}
+

@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { Banknote, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import Navbar from "../components/Navbar";
+import { useLancamentos } from "../hooks/useLancamentos";
 
 const cores = ["#1E40AF", "#10B981", "#F59E0B", "#EF4444", "#6366F1", "#14B8A6"];
 const MESES = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"];
@@ -20,13 +21,12 @@ export default function DashboardPage() {
   const [mesSelecionado, setMesSelecionado] = useState(new Date().getMonth());
   const [ano, setAno] = useState(new Date().getFullYear());
   const [openMesPicker, setOpenMesPicker] = useState(false);
-  const [total, setTotal] = useState<number>(0);
   const [gastosPorCategoria, setGastosPorCategoria] = useState([]);
   const [gastosPorMes, setGastosPorMes] = useState([]);
+  const {lancamentos, total, setTotal, handleGetValorTotal} = useLancamentos();
 
   useEffect(() => {
     const dadosMock = {
-      totalDespesas: 4532.75,
       porCategoria: [
         { categoria: "Alimentação", valor: 1200 },
         { categoria: "Transporte", valor: 800 },
@@ -35,10 +35,44 @@ export default function DashboardPage() {
       porMes: [],
     };
 
-    setTotal(dadosMock.totalDespesas);
     setGastosPorCategoria(dadosMock.porCategoria);
     setGastosPorMes(dadosMock.porMes);
   }, [mesSelecionado]);
+
+
+
+// Primeiro dia do mês
+const primeiroDia = new Date(ano, mesSelecionado, 1);
+
+// Último dia do mês (zero no dia 0 do próximo mês dá o último dia do mês atual)
+const ultimoDia = new Date(ano, mesSelecionado + 1, 0);
+
+// Função para formatar a data no formato yyyy-mm-dd
+function formatDate(date: Date): string {
+  const y = date.getFullYear();
+  const m = (date.getMonth() + 1).toString().padStart(2, "0"); // +1 porque getMonth é 0-11
+  const d = date.getDate().toString().padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+
+
+const dataInicial = formatDate(primeiroDia);
+const dataFinal = formatDate(ultimoDia);
+
+
+
+  useEffect(() => {
+  const primeiroDia = new Date(ano, mesSelecionado, 1);
+  const ultimoDia = new Date(ano, mesSelecionado + 1, 0);
+
+  const dataInicial = formatDate(primeiroDia);
+  const dataFinal = formatDate(ultimoDia);
+
+  console.log(dataFinal, dataInicial)
+
+  handleGetValorTotal(dataInicial, dataFinal );
+}, [ano, mesSelecionado]);
 
   const handleSelecionarMes = (index: number) => {
     setMesSelecionado(index);
