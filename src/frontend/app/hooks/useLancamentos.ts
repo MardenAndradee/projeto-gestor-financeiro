@@ -14,6 +14,7 @@ export function useLancamentos() {
   const [idParcela, setIdParcela] = useState(Number);
   const [descricao, setdescricao] = useState("");
   const [valor, setValor] = useState("");
+  const [total, setTotal] = useState(0);
   const [categoria, setCategoria] = useState("Contas Fixas");
   const [idCategoria, setIdCategoria] = useState(0);
   const [data, setData] = useState(obterDataHoje());
@@ -242,11 +243,53 @@ export function useLancamentos() {
     }
   };
 
+  // função pra pegar valor total
+   const handleGetValorTotal = async (dataInicio: string, dataFim: string ) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Usuário não autenticado");
+
+      const idUsuario = await buscarUsuario();
+
+
+      const dataInicial = dataInicio || "";
+      const dataFinal = dataFim || "";
+
+
+    const queryParams = new URLSearchParams({
+      dataInicial,
+      dataFinal,
+      idUsuario,
+    });
+
+      const response = await fetch(`http://localhost:8080/parcelas/valortotal?${queryParams.toString()}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+       const valorTotal = await response.json();
+
+    if (!response.ok) {
+      throw new Error("Erro ao buscar valor total");
+    }
+
+    
+      
+      setTotal(valorTotal);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao filtrar");
+    }
+  };
+
 
   return {
     idParcela, setIdParcela,
     descricao, setdescricao,
     valor, setValor,
+    total, setTotal,
     categoria, setCategoria,
     idCategoria, setIdCategoria,
     data, setData,
@@ -260,6 +303,7 @@ export function useLancamentos() {
     handleDeleteLancamento,
     handleEditLancamento,
     handleGetOneLancamento,
+    handleGetValorTotal,
     lancamentos,
   };
 }

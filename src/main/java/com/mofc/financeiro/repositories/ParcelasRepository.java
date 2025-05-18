@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ParcelasRepository extends JpaRepository<Parcelas, Long> {
@@ -62,4 +63,12 @@ public interface ParcelasRepository extends JpaRepository<Parcelas, Long> {
             "where p.idParcela = :idParcela")
     List<ParcelasDTO> findByIdParcela(@Param("idParcela")Long idParcela);
 
+    @Query("SELECT SUM(p.valor) " +
+            "FROM Parcelas p " +
+            "JOIN p.despesa d " +
+            "JOIN d.usuario u " +  // se quiser deixar claro
+            "WHERE p.dataParcela >= :dataInicial AND p.dataParcela <= :dataFinal AND d.usuario.id = :usuarioId")
+    Optional<Double> getValorTotal(@Param("dataInicial") LocalDate dataInicial,
+                                   @Param("dataFinal") LocalDate dataFinal,
+                                   @Param("usuarioId") Long usuarioId);
 }

@@ -5,6 +5,7 @@ import com.mofc.financeiro.dtos.ParcelasDTO;
 import com.mofc.financeiro.entities.Parcelas;
 import com.mofc.financeiro.services.ParcelasService;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,6 +72,16 @@ public class ParcelasController {
         List<ParcelasDTO> parcelas = parcelasService.filtrarParcelas(dataInicial, dataFinal, categoriaId.orElse(null),idUsuario.orElse(null));
         return ResponseEntity.ok(parcelas);
 
+    }
+
+    @GetMapping("parcelas/valortotal")
+    public ResponseEntity<Optional<Double>>getValorTotal(
+            @RequestParam(required = true)LocalDate dataInicial,
+            @RequestParam(required = true)LocalDate dataFinal,
+            @RequestParam(required = true) Optional<Long> idUsuario){
+
+        Optional<Double> valorTotal = parcelasService.getValorTotal(dataInicial,dataFinal,idUsuario.orElse(null));
+        return ResponseEntity.ok(valorTotal);
     }
 
 }

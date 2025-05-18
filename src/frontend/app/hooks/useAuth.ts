@@ -28,7 +28,7 @@ export function useAuth() {
 
       const data = await response.json();
       localStorage.setItem("token", data.token);
-      router.push("/lancamentos");
+      router.push("/mainpage");
 
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro inesperado");

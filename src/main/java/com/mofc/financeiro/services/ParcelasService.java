@@ -104,4 +104,9 @@ public class ParcelasService {
         despesasRepository.save(despesa);
         parcelasRepository.save(parcela);
     }
+
+    @Transactional
+    public Optional<Double> getValorTotal(LocalDate dataInicial, LocalDate dataFinal, Long idUsuario){
+        return parcelasRepository.getValorTotal(dataInicial,dataFinal, idUsuario);
+    }
 }
