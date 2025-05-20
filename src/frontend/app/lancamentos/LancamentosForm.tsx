@@ -5,10 +5,11 @@ import { useCategorias } from "../hooks/useCategorias";
 
 type LancamentosFormProps = {
   onClose: () => void;
+  atualizarLancamentos: () => void;
   idParcela: number | null;
 };
 
-export default function LancamentosForm({ onClose, idParcela }: LancamentosFormProps) {
+export default function LancamentosForm({ onClose, idParcela, atualizarLancamentos }: LancamentosFormProps) {
   const {
     descricao, setdescricao,
     valor, setValor,
@@ -32,7 +33,7 @@ export default function LancamentosForm({ onClose, idParcela }: LancamentosFormP
     handleCategorias,
     handleGetCategoriaById
   } = useCategorias();
-  const [oneCategoria, setOneCategoria] = useState<string>(''); 
+  const [oneCategoria, setOneCategoria] = useState<string>('');
 
   useEffect(() => {
     handleGetCategorias();
@@ -51,12 +52,12 @@ export default function LancamentosForm({ onClose, idParcela }: LancamentosFormP
         setdescricao(lancamentos.descricao);
         setValor(lancamentos.valor);
         setIdCategoria(lancamentos.idCategoria);
-        setData(lancamentos.dataParcela); 
+        setData(lancamentos.dataParcela);
         setFormaPagamento(lancamentos.formaPagamento);
         setQtdParcelas(lancamentos.qtdParcelas || 1);
 
     })
-      
+
   } else {
     setdescricao('');
     setValor('');
@@ -81,11 +82,11 @@ useEffect(() => {
   function obterDataHoje() {
     const hoje = new Date();
     const dataHoje = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
-    return dataHoje.toISOString().split("T")[0]; // retorna "YYYY-MM-DD"
+    return dataHoje.toISOString().split("T")[0];
   }
 
 
-  
+
   const [showCategoriaModal, setShowCategoriaModal] = useState(false);
   const [novaCategoria, setNovaCategoria] = useState("");
 
@@ -93,11 +94,13 @@ useEffect(() => {
     e.preventDefault();
      if (idParcela !== null) {
       await handleEditLancamento(idParcela);
+      atualizarLancamentos();
       onClose();
     }else{
       const sucesso = await handleLancamento();
 
     if(sucesso){
+        atualizarLancamentos();
       onClose();
     }
     }
@@ -144,7 +147,7 @@ useEffect(() => {
       <form onSubmit={handleSubmit}>
         <div className="fixed inset-0 backdrop-blur-sm flex justify-center items-center z-10">
           <div className="bg-white p-6 rounded-xl shadow-lg w-11/12 max-w-md">
-            <h3 className="text-xl font-semibold mb-4 text-gray-900">Adicionar Lançamento</h3>
+            <h3 className="text-xl font-bold font-mono mb-4 text-gray-900">Adicionar Lançamento</h3>
 
             <input
               type="text"
@@ -191,7 +194,7 @@ useEffect(() => {
               <button
                 type="button"
                 onClick={() => setShowCategoriaModal(true)}
-                className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-3 rounded-full"
+                className="bg-green-500 hover:bg-green-600 text-white t font-bold py-1 px-3 rounded-full"
               >
                 +
               </button>
