@@ -93,7 +93,6 @@ export default function Navbar({
   <Menu size={26} />
 </button>
 
-
         {/* logo central */}
         <div className="flex-grow text-center">
           <Image
