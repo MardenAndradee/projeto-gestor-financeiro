@@ -138,6 +138,7 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
       )}
 
       {showForm && <LancamentoForm onClose={() => setShowForm(false)}
+      atualizarLancamentos={() => handleGetLancamentos(filtros)}
       idParcela ={idEditando} />}
     </div>
   );
