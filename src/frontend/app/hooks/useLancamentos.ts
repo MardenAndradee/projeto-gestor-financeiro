@@ -43,7 +43,7 @@ export function useLancamentos() {
     }
   });
 
-  if(!getUsuario.ok){
+  if(!getUsuario.ok){9
     router.push("/login");
     throw new Error("ERRO AO BUSCAR USUÁRIO");
     

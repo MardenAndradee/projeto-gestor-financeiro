@@ -47,8 +47,18 @@ export default function LancamentosPage() {
     categoria: "",
   });
 
+  
+  const [filtrosAplicados, setFiltrosAplicados] = useState(filtros);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFiltros((prev) => ({ ...prev, [name]: value }));
+  };
+
   const handleAdicionarFiltro = () => {
     console.log("Filtros aplicados:", filtros);
+    setFiltrosAplicados(filtros); // atualiza só quando o botão for clicado
+    handleGetLancamentos(filtros); // ou use este dentro do componente de lista
   };
 
   const handleRemoverFiltros = () => {
@@ -57,6 +67,8 @@ export default function LancamentosPage() {
       dataFim: obterUltimoDia(),
       categoria: "",
     });
+    setFiltrosAplicados(filtros);
+    handleGetLancamentos(filtros);
   };
 
   return (
@@ -76,26 +88,31 @@ export default function LancamentosPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <input
                 type="date"
+                name="dataInicio"
                 value={filtros.dataInicio}
-                onChange={(e) =>
-                  setFiltros({ ...filtros, dataInicio: e.target.value })
-                }
+                onChange={handleChange}
+                //onChange={(e) =>
+                 //setFiltros({ ...filtros, dataInicio: e.target.value })
+                //}
                 className="w-full px-4 py-2 border rounded-lg text-gray-700"
               />
               <input
                 type="date"
+                name="dataFim"
                 value={filtros.dataFim}
-                onChange={(e) =>
-                  setFiltros({ ...filtros, dataFim: e.target.value })
-                }
+                onChange={handleChange}
+                //onChange={(e) =>
+                  //setFiltros({ ...filtros, dataFim: e.target.value })
+                //}
                 className="w-full px-4 py-2 border rounded-lg text-gray-700"
               />
               <select
-                name="idCategoria"
+                name="categoria"
                 value={filtros.categoria}
-                onChange={(e) =>
-                  setFiltros({ ...filtros, categoria: e.target.value })
-                }
+                onChange={handleChange}
+                //onChange={(e) =>
+                  //setFiltros({ ...filtros, categoria: e.target.value })
+                //}
                 className="w-full px-4 py-2 border rounded-lg bg-white text-gray-700"
               >
                 <option value="">Selecione uma categoria</option>
@@ -144,7 +161,7 @@ export default function LancamentosPage() {
 
           {/* Lista de lançamentos */}
           <div className="bg-white p-4 rounded-lg shadow">
-            <LancamentosList filtros={filtros} />
+            <LancamentosList filtros={filtrosAplicados} />
           </div>
         </div>
 
