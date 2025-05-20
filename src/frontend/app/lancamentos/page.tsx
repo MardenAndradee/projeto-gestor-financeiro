@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import LancamentoList from "./LancamentosList";
-import LancamentoForm from "./LancamentosForm";
+import LancamentosList from "./LancamentosList";
+import LancamentosForm from "./LancamentosForm";
 import { useCategorias } from "../hooks/useCategorias";
 import { useRouter } from "next/navigation";
 
@@ -124,16 +124,16 @@ export default function LancamentosPage() {
               </select>
             </div>
 
-            <div className="flex flex-wrap justify-end gap-2">
+            <div className="flex flex-wrap justify-center md:justify-end gap-2">
               <button
                 onClick={handleRemoverFiltros}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
+                className="flex items-center gap-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition text-sm"
               >
-                Remover Filtros
+                Remover Filtro
               </button>
               <button
                 onClick={handleAdicionarFiltro}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+                className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm"
               >
                 Adicionar Filtro
               </button>
@@ -142,12 +142,12 @@ export default function LancamentosPage() {
 
           {/* Lista de lançamentos */}
           <div className="bg-white p-4 rounded-lg shadow">
-            <LancamentoList filtros={filtros} />
+            <LancamentosList filtros={filtros} />
           </div>
         </div>
 
         {/* Modal do formulário */}
-        {showForm && <LancamentoForm onClose={() => setShowForm(false)} />}
+        {showForm && <LancamentosForm onClose={() => setShowForm(false)} />}
       </main>
     </div>
   );
