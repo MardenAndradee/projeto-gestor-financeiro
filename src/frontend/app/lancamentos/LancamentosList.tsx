@@ -35,14 +35,26 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
     setShowForm(true);
   };
 
+  const atualizarLancamentos = () => {
+   handleGetLancamentos(filtros)
+  }
+
   const handleEditar = (idParcela: number) => {
     setIdEditando(idParcela); // Modo edição
+    atualizarLancamentos()
     setShowForm(true);
   };
+
+  const handleExcluir = (idParcela: number) => {
+    handleDeleteLancamento(idParcela)
+    atualizarLancamentos()
+  }
 
   useEffect(() => {
     handleGetLancamentos(filtros);
   }, [filtros]);
+
+  
 
   const handleExportarExcel = async () => {
     try {
@@ -115,6 +127,7 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => handleEditar(item.idParcela)}
+            
             title="Editar"
             className="hover:text-blue-600 transition"
           >
@@ -122,7 +135,7 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
           </button>
 
           <button
-            onClick={() => handleDeleteLancamento(item.idParcela)}
+            onClick={() => handleExcluir(item.idParcela)}
             title="Excluir"
             className="hover:text-red-600 transition"
           >
@@ -140,6 +153,7 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
       {showForm && <LancamentoForm onClose={() => setShowForm(false)}
       atualizarLancamentos={() => handleGetLancamentos(filtros)}
       idParcela ={idEditando} />}
+      
     </div>
   );
 }
