@@ -1,6 +1,7 @@
 package com.mofc.financeiro.controllers;
 
 import com.mofc.financeiro.dtos.AtualizarParcelaDTO;
+import com.mofc.financeiro.dtos.CategoriaValorDTO;
 import com.mofc.financeiro.dtos.ParcelasDTO;
 import com.mofc.financeiro.entities.Parcelas;
 import com.mofc.financeiro.services.ParcelasService;
@@ -82,6 +83,16 @@ public class ParcelasController {
 
         Optional<Double> valorTotal = parcelasService.getValorTotal(dataInicial,dataFinal,idUsuario.orElse(null));
         return ResponseEntity.ok(valorTotal);
+    }
+
+    @GetMapping("parcelas/totalcategoria")
+    public ResponseEntity<List<CategoriaValorDTO>>getTotalCategoria(
+            @RequestParam(required = true)LocalDate dataInicial,
+            @RequestParam(required = true)LocalDate dataFinal,
+            @RequestParam(required = true) Optional<Long> idUsuario) {
+
+        List<CategoriaValorDTO> totalCategoria = parcelasService.totalCategoria(dataInicial,dataFinal,idUsuario.orElse(null));
+        return ResponseEntity.ok(totalCategoria);
     }
 
 }
