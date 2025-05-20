@@ -1,5 +1,6 @@
 package com.mofc.financeiro.repositories;
 
+import com.mofc.financeiro.dtos.CategoriaValorDTO;
 import com.mofc.financeiro.dtos.ParcelasDTO;
 import com.mofc.financeiro.entities.Parcelas;
 import jakarta.transaction.Transactional;
@@ -71,4 +72,16 @@ public interface ParcelasRepository extends JpaRepository<Parcelas, Long> {
     Optional<Double> getValorTotal(@Param("dataInicial") LocalDate dataInicial,
                                    @Param("dataFinal") LocalDate dataFinal,
                                    @Param("usuarioId") Long usuarioId);
+
+    @Query("SELECT new com.mofc.financeiro.dtos.CategoriaValorDTO(p.despesa.categoria.categoria, SUM(p.valor)) " +
+            "FROM Parcelas p " +
+            "WHERE p.despesa.usuario.id = :usuarioId " +
+            "AND p.dataParcela >= :dataInicio " +
+            "AND p.dataParcela <= :dataFim " +
+            "GROUP BY p.despesa.categoria.categoria")
+    List<CategoriaValorDTO> somarValoresPorCategoria(
+            @Param("usuarioId") Long usuarioId,
+            @Param("dataInicio") LocalDate dataInicial,
+            @Param("dataFim") LocalDate dataFinal
+    );
 }

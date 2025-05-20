@@ -21,9 +21,8 @@ export default function DashboardPage() {
   const [mesSelecionado, setMesSelecionado] = useState(new Date().getMonth());
   const [ano, setAno] = useState(new Date().getFullYear());
   const [openMesPicker, setOpenMesPicker] = useState(false);
-  const [gastosPorCategoria, setGastosPorCategoria] = useState([]);
   const [gastosPorMes, setGastosPorMes] = useState([]);
-  const {lancamentos, total, setTotal, handleGetValorTotal} = useLancamentos();
+  const {lancamentos, total, gastosPorCategoria, setTotal, handleGetValorTotal, handleGetValorTotalCategoria, setGastosPorCategoria} = useLancamentos();
 
   useEffect(() => {
     const dadosMock = {
@@ -35,7 +34,6 @@ export default function DashboardPage() {
       porMes: [],
     };
 
-    setGastosPorCategoria(dadosMock.porCategoria);
     setGastosPorMes(dadosMock.porMes);
   }, [mesSelecionado]);
 
@@ -72,6 +70,8 @@ const dataFinal = formatDate(ultimoDia);
   console.log(dataFinal, dataInicial)
 
   handleGetValorTotal(dataInicial, dataFinal );
+  handleGetValorTotalCategoria(dataInicial, dataFinal)
+  console.log(gastosPorCategoria)
 }, [ano, mesSelecionado]);
 
   const handleSelecionarMes = (index: number) => {
@@ -177,7 +177,7 @@ const dataFinal = formatDate(ultimoDia);
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
-                  dataKey="valor"
+                  dataKey="total"
                   data={gastosPorCategoria}
                   nameKey="categoria"
                   cx="50%"

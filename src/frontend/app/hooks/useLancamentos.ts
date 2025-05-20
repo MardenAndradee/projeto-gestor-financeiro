@@ -17,6 +17,7 @@ export function useLancamentos() {
   const [total, setTotal] = useState(0);
   const [categoria, setCategoria] = useState("Contas Fixas");
   const [idCategoria, setIdCategoria] = useState(0);
+  const [gastosPorCategoria, setGastosPorCategoria] = useState<any[]>([]);
   const [data, setData] = useState(obterDataHoje());
   const [formaPagamento, setFormaPagamento] = useState("Débito");
   const [qtdParcelas, setQtdParcelas] = useState(1);
@@ -284,6 +285,46 @@ export function useLancamentos() {
     }
   };
 
+  // função pra pegar valor total
+   const handleGetValorTotalCategoria = async (dataInicio: string, dataFim: string ) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Usuário não autenticado");
+
+      const idUsuario = await buscarUsuario();
+
+
+      const dataInicial = dataInicio || "";
+      const dataFinal = dataFim || "";
+
+
+    const queryParams = new URLSearchParams({
+      dataInicial,
+      dataFinal,
+      idUsuario,
+    });
+
+      const response = await fetch(`http://localhost:8080/parcelas/totalcategoria?${queryParams.toString()}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+       const responseData = await response.json();
+       setGastosPorCategoria(responseData);
+
+      if(!response.ok){
+        throw new Error(responseData.message || "Erro ao filtrar")
+      }
+      
+      setLancamentos(responseData); 
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao filtrar");
+    }
+  };
+
 
   return {
     idParcela, setIdParcela,
@@ -292,6 +333,7 @@ export function useLancamentos() {
     total, setTotal,
     categoria, setCategoria,
     idCategoria, setIdCategoria,
+    gastosPorCategoria, setGastosPorCategoria,
     data, setData,
     formaPagamento, setFormaPagamento,
     qtdParcelas, setQtdParcelas,
@@ -304,6 +346,7 @@ export function useLancamentos() {
     handleEditLancamento,
     handleGetOneLancamento,
     handleGetValorTotal,
+    handleGetValorTotalCategoria,
     lancamentos,
   };
 }

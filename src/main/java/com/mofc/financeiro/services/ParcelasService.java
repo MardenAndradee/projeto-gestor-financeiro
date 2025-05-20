@@ -1,6 +1,7 @@
 package com.mofc.financeiro.services;
 
 import com.mofc.financeiro.dtos.AtualizarParcelaDTO;
+import com.mofc.financeiro.dtos.CategoriaValorDTO;
 import com.mofc.financeiro.dtos.ParcelasDTO;
 import com.mofc.financeiro.entities.Categorias;
 import com.mofc.financeiro.entities.Despesas;
@@ -108,5 +109,10 @@ public class ParcelasService {
     @Transactional
     public Optional<Double> getValorTotal(LocalDate dataInicial, LocalDate dataFinal, Long idUsuario){
         return parcelasRepository.getValorTotal(dataInicial,dataFinal, idUsuario);
+    }
+
+    @Transactional
+    public List<CategoriaValorDTO> totalCategoria(LocalDate dataInicial, LocalDate dataFinal, Long idUsuario){
+        return parcelasRepository.somarValoresPorCategoria(idUsuario,dataInicial,dataFinal);
     }
 }
