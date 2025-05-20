@@ -44,8 +44,9 @@ export function useLancamentos() {
   });
 
   if(!getUsuario.ok){
-    alert("ERRO BUSCAR USUARIO");
+    router.push("/login");
     throw new Error("ERRO AO BUSCAR USUÁRIO");
+    
 }
   const usuario = await getUsuario.json();
   const idUsuario = usuario.idUsuario

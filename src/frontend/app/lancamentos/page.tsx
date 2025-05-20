@@ -4,14 +4,15 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import LancamentosList from "./LancamentosList";
 import LancamentosForm from "./LancamentosForm";
+import { useLancamentos } from "../hooks/useLancamentos";
 import { useCategorias } from "../hooks/useCategorias";
 import { useRouter } from "next/navigation";
 
 export default function LancamentosPage() {
   const [showForm, setShowForm] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  const [lancamentos, setLancamentos] = useState([]);
   const { categorias, handleGetCategorias } = useCategorias();
+  const {lancamentos, handleGetLancamentos, handleDeleteLancamento, handleGetOneLancamento} = useLancamentos();
   const router = useRouter();
   const [idEditando, setIdEditando] = useState<number | null>(null);
 
@@ -148,7 +149,8 @@ export default function LancamentosPage() {
         </div>
 
         {/* Modal do formulário */}
-        {showForm && <LancamentoForm onClose={() => setShowForm(false)}
+        {showForm && <LancamentosForm onClose={() => setShowForm(false)}
+        atualizarLancamentos={() => handleGetLancamentos(filtros)}
         idParcela ={idEditando} />}
       </main>
     </div>

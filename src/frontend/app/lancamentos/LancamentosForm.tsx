@@ -109,7 +109,8 @@ useEffect(() => {
   const handleAddCategoria = async () => {
       const sucesso = await handleCategorias();
       setNovaCategoria("");
-      setShowCategoriaModal;
+      setShowCategoriaModal(false);
+      handleGetCategorias();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
