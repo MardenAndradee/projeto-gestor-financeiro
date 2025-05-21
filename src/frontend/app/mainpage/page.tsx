@@ -164,7 +164,7 @@ const dataFinal = formatDate(ultimoDia);
             <div className="bg-white rounded-2xl p-6 shadow-md flex items-center justify-between border border-red-100 hover:shadow-lg transition">
               <div>
                 <h3 className="text-gray-600 text-sm font-semibold mb-1">Total de Despesas</h3>
-                <p className="text-2xl font-bold text-red-600">R$ {total.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-red-600">R$ {(total ?? 0).toFixed(2)}</p>
               </div>
               <div className="bg-red-100 text-red-700 border border-red-300 rounded-full p-3">
                 <Banknote className="w-6 h-6" />
