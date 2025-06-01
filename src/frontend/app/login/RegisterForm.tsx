@@ -36,7 +36,9 @@ export default function RegisterForm() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Confirmar senha</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Confirmar senha
+        </label>
         <input
           type="password"
           className="mt-1 w-full px-4 py-2 border rounded-lg text-black"

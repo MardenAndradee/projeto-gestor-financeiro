@@ -12,7 +12,12 @@ export default function LancamentosPage() {
   const [showForm, setShowForm] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const { categorias, handleGetCategorias } = useCategorias();
-  const {lancamentos, handleGetLancamentos, handleDeleteLancamento, handleGetOneLancamento} = useLancamentos();
+  const {
+    lancamentos,
+    handleGetLancamentos,
+    handleDeleteLancamento,
+    handleGetOneLancamento,
+  } = useLancamentos();
   const router = useRouter();
   const [idEditando, setIdEditando] = useState<number | null>(null);
 
@@ -72,7 +77,9 @@ export default function LancamentosPage() {
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Filtros */}
           <div className="bg-white p-4 rounded-lg shadow mb-6">
-            <h2 className="text-xl font-bold font-mono text-gray-800 mb-4">Filtros</h2>
+            <h2 className="text-xl font-bold font-mono text-gray-800 mb-4">
+              Filtros
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <input
                 type="date"
@@ -149,9 +156,13 @@ export default function LancamentosPage() {
         </div>
 
         {/* Modal do formulário */}
-        {showForm && <LancamentosForm onClose={() => setShowForm(false)}
-        atualizarLancamentos={() => handleGetLancamentos(filtros)}
-        idParcela ={idEditando} />}
+        {showForm && (
+          <LancamentosForm
+            onClose={() => setShowForm(false)}
+            atualizarLancamentos={() => handleGetLancamentos(filtros)}
+            idParcela={idEditando}
+          />
+        )}
       </main>
     </div>
   );

@@ -13,8 +13,28 @@ import { Banknote, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import Navbar from "../components/Navbar";
 import { useLancamentos } from "../hooks/useLancamentos";
 
-const cores = ["#1E40AF", "#10B981", "#F59E0B", "#EF4444", "#6366F1", "#14B8A6"];
-const MESES = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"];
+const cores = [
+  "#1E40AF",
+  "#10B981",
+  "#F59E0B",
+  "#EF4444",
+  "#6366F1",
+  "#14B8A6",
+];
+const MESES = [
+  "JAN",
+  "FEV",
+  "MAR",
+  "ABR",
+  "MAI",
+  "JUN",
+  "JUL",
+  "AGO",
+  "SET",
+  "OUT",
+  "NOV",
+  "DEZ",
+];
 
 export default function DashboardPage() {
   const [collapsed, setCollapsed] = useState(false);
@@ -22,7 +42,15 @@ export default function DashboardPage() {
   const [ano, setAno] = useState(new Date().getFullYear());
   const [openMesPicker, setOpenMesPicker] = useState(false);
   const [gastosPorMes, setGastosPorMes] = useState([]);
-  const {lancamentos, total, gastosPorCategoria, setTotal, handleGetValorTotal, handleGetValorTotalCategoria, setGastosPorCategoria} = useLancamentos();
+  const {
+    lancamentos,
+    total,
+    gastosPorCategoria,
+    setTotal,
+    handleGetValorTotal,
+    handleGetValorTotalCategoria,
+    setGastosPorCategoria,
+  } = useLancamentos();
 
   useEffect(() => {
     const dadosMock = {
@@ -37,42 +65,36 @@ export default function DashboardPage() {
     setGastosPorMes(dadosMock.porMes);
   }, [mesSelecionado]);
 
-
-
-// Primeiro dia do mês
-const primeiroDia = new Date(ano, mesSelecionado, 1);
-
-// Último dia do mês (zero no dia 0 do próximo mês dá o último dia do mês atual)
-const ultimoDia = new Date(ano, mesSelecionado + 1, 0);
-
-// Função para formatar a data no formato yyyy-mm-dd
-function formatDate(date: Date): string {
-  const y = date.getFullYear();
-  const m = (date.getMonth() + 1).toString().padStart(2, "0"); // +1 porque getMonth é 0-11
-  const d = date.getDate().toString().padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
-
-
-
-const dataInicial = formatDate(primeiroDia);
-const dataFinal = formatDate(ultimoDia);
-
-
-
-  useEffect(() => {
+  // Primeiro dia do mês
   const primeiroDia = new Date(ano, mesSelecionado, 1);
+
+  // Último dia do mês (zero no dia 0 do próximo mês dá o último dia do mês atual)
   const ultimoDia = new Date(ano, mesSelecionado + 1, 0);
+
+  // Função para formatar a data no formato yyyy-mm-dd
+  function formatDate(date: Date): string {
+    const y = date.getFullYear();
+    const m = (date.getMonth() + 1).toString().padStart(2, "0"); // +1 porque getMonth é 0-11
+    const d = date.getDate().toString().padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
 
   const dataInicial = formatDate(primeiroDia);
   const dataFinal = formatDate(ultimoDia);
 
-  console.log(dataFinal, dataInicial)
+  useEffect(() => {
+    const primeiroDia = new Date(ano, mesSelecionado, 1);
+    const ultimoDia = new Date(ano, mesSelecionado + 1, 0);
 
-  handleGetValorTotal(dataInicial, dataFinal );
-  handleGetValorTotalCategoria(dataInicial, dataFinal)
-  console.log(gastosPorCategoria)
-}, [ano, mesSelecionado]);
+    const dataInicial = formatDate(primeiroDia);
+    const dataFinal = formatDate(ultimoDia);
+
+    console.log(dataFinal, dataInicial);
+
+    handleGetValorTotal(dataInicial, dataFinal);
+    handleGetValorTotalCategoria(dataInicial, dataFinal);
+    console.log(gastosPorCategoria);
+  }, [ano, mesSelecionado]);
 
   const handleSelecionarMes = (index: number) => {
     setMesSelecionado(index);
@@ -89,7 +111,6 @@ const dataFinal = formatDate(ultimoDia);
         }`}
       >
         <div className="max-w-7xl mx-auto space-y-6">
-
           {/* seletor de mês */}
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
@@ -110,7 +131,9 @@ const dataFinal = formatDate(ultimoDia);
                     >
                       <ChevronLeft className="w-5 h-5 text-green-600" />
                     </button>
-                    <span className="text-lg font-bold text-green-700">{ano}</span>
+                    <span className="text-lg font-bold text-green-700">
+                      {ano}
+                    </span>
                     <button
                       onClick={() => setAno((prev) => prev + 1)}
                       className="p-1 rounded-full hover:bg-green-100 active:scale-95 transition-all"
@@ -159,12 +182,18 @@ const dataFinal = formatDate(ultimoDia);
           </div>
 
           {/* Card de total de despesas e título */}
-          <h1 className="text-3xl font-bold font-mono text-gray-800">Dashboard</h1>
+          <h1 className="text-3xl font-bold font-mono text-gray-800">
+            Dashboard
+          </h1>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <div className="bg-white rounded-2xl p-6 shadow-md flex items-center justify-between border border-red-100 hover:shadow-lg transition">
               <div>
-                <h3 className="text-gray-600 text-sm font-semibold mb-1">Total de Despesas</h3>
-                <p className="text-2xl font-bold text-red-600">R$ {total.toFixed(2)}</p>
+                <h3 className="text-gray-600 text-sm font-semibold mb-1">
+                  Total de Despesas
+                </h3>
+                <p className="text-2xl font-bold text-red-600">
+                  R$ {total.toFixed(2)}
+                </p>
               </div>
               <div className="bg-red-100 text-red-700 border border-red-300 rounded-full p-3">
                 <Banknote className="w-6 h-6" />
@@ -187,7 +216,10 @@ const dataFinal = formatDate(ultimoDia);
                 >
                   {Array.isArray(gastosPorCategoria) &&
                     gastosPorCategoria.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={cores[index % cores.length]} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={cores[index % cores.length]}
+                      />
                     ))}
                 </Pie>
                 <Legend />

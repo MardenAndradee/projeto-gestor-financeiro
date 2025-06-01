@@ -26,7 +26,12 @@ type Filtros = {
 };
 
 export default function LancamentoList({ filtros }: { filtros: Filtros }) {
-  const {lancamentos, handleGetLancamentos, handleDeleteLancamento, handleGetOneLancamento} = useLancamentos();
+  const {
+    lancamentos,
+    handleGetLancamentos,
+    handleDeleteLancamento,
+    handleGetOneLancamento,
+  } = useLancamentos();
   const [showForm, setShowForm] = useState(false);
   const [idEditando, setIdEditando] = useState<number | null>(null);
 
@@ -36,33 +41,34 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
   };
 
   const atualizarLancamentos = () => {
-   handleGetLancamentos(filtros)
-  }
+    handleGetLancamentos(filtros);
+  };
 
   const handleEditar = (idParcela: number) => {
     setIdEditando(idParcela); // Modo edição
-    atualizarLancamentos()
+    atualizarLancamentos();
     setShowForm(true);
   };
 
   const handleExcluir = (idParcela: number) => {
-    handleDeleteLancamento(idParcela)
-    atualizarLancamentos()
-  }
+    handleDeleteLancamento(idParcela);
+    atualizarLancamentos();
+  };
 
   useEffect(() => {
     handleGetLancamentos(filtros);
   }, [filtros]);
 
-  
-
   const handleExportarExcel = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8080/despesa/export/excel", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await fetch(
+        "http://localhost:8080/despesa/export/excel",
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       if (!response.ok) throw new Error("Erro ao exportar planilha.");
 
@@ -84,7 +90,9 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
   return (
     <div className="bg-white p-6 rounded-xl shadow-lg">
       <div className="flex justify-between items-center flex-wrap gap-2 mb-4">
-        <h2 className="text-xl font-bold font-mono text-gray-800">Meus Lançamentos</h2>
+        <h2 className="text-xl font-bold font-mono text-gray-800">
+          Meus Lançamentos
+        </h2>
         <div className="flex flex-wrap justify-center md:justify-end gap-2">
           <button
             onClick={handleExportarExcel}
@@ -111,11 +119,21 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
               className="p-4 border-b border-gray-200 flex flex-col md:flex-row md:justify-between md:items-center gap-2"
             >
               <div className="flex-1">
-                <p className="text-gray-800 font-medium break-words">{item.descricao}</p>
+                <p className="text-gray-800 font-medium break-words">
+                  {item.descricao}
+                </p>
                 <span className="text-gray-500 text-sm block mt-1">
-                  {new Date(item.dataParcela || item.data).toLocaleDateString("pt-BR")} -{" "}
-                  {typeof item.categoria === "object" ? item.categoria.idCategoria : item.categoria} | {item.formaPagamento}{" "}
-                  {item.qtdParcelas > 1 ? ` | ${item.nParcela} / ${item.qtdParcelas}` : ""}
+                  {new Date(item.dataParcela || item.data).toLocaleDateString(
+                    "pt-BR"
+                  )}{" "}
+                  -{" "}
+                  {typeof item.categoria === "object"
+                    ? item.categoria.idCategoria
+                    : item.categoria}{" "}
+                  | {item.formaPagamento}{" "}
+                  {item.qtdParcelas > 1
+                    ? ` | ${item.nParcela} / ${item.qtdParcelas}`
+                    : ""}
                 </span>
               </div>
 
@@ -124,36 +142,38 @@ export default function LancamentoList({ filtros }: { filtros: Filtros }) {
                   R$ {item.valor.toFixed(2)}
                 </span>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => handleEditar(item.idParcela)}
-            
-            title="Editar"
-            className="hover:text-blue-600 transition"
-          >
-            <PencilSquareIcon className="h-5 w-5 text-gray-600 hover:text-gray-700" />
-          </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleEditar(item.idParcela)}
+                    title="Editar"
+                    className="hover:text-blue-600 transition"
+                  >
+                    <PencilSquareIcon className="h-5 w-5 text-gray-600 hover:text-gray-700" />
+                  </button>
 
-          <button
-            onClick={() => handleExcluir(item.idParcela)}
-            title="Excluir"
-            className="hover:text-red-600 transition"
-          >
-            <TrashIcon className="h-5 w-5 text-gray-600 hover:text-gray-700" />
-          </button>
-        </div>
-      </div>
-    </li>
-  ))}
-</ul>
+                  <button
+                    onClick={() => handleExcluir(item.idParcela)}
+                    title="Excluir"
+                    className="hover:text-red-600 transition"
+                  >
+                    <TrashIcon className="h-5 w-5 text-gray-600 hover:text-gray-700" />
+                  </button>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
       ) : (
         <p className="text-red-500">Erro ao carregar lançamentos.</p>
       )}
 
-      {showForm && <LancamentoForm onClose={() => setShowForm(false)}
-      atualizarLancamentos={() => handleGetLancamentos(filtros)}
-      idParcela ={idEditando} />}
-      
+      {showForm && (
+        <LancamentoForm
+          onClose={() => setShowForm(false)}
+          atualizarLancamentos={() => handleGetLancamentos(filtros)}
+          idParcela={idEditando}
+        />
+      )}
     </div>
   );
 }
