@@ -1,11 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  LogOut,
-  Menu,
-  User,
-} from "lucide-react";
+import { LogOut, Menu, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import logo_verde from "../public/logo_verde.png";
@@ -57,7 +53,9 @@ export default function Navbar({
             }`}
           >
             <span className="text-lg mr-2">{item.icon}</span>
-            {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
+            {!collapsed && (
+              <span className="text-sm font-medium">{item.label}</span>
+            )}
           </Link>
         ))}
       </nav>
@@ -81,17 +79,16 @@ export default function Navbar({
         {/* botao de hamburguer sidebar */}
         <button
           onClick={() => {
-  if (isMobile) {
-    setMobileOpen((prev) => !prev); // Alterna entre abrir e fechar
-  } else {
-    setCollapsed((prev) => !prev);
-  }
-}}
-
-  className="text-gray-700 hover:text-green-600"
->
-  <Menu size={26} />
-</button>
+            if (isMobile) {
+              setMobileOpen((prev) => !prev); // Alterna entre abrir e fechar
+            } else {
+              setCollapsed((prev) => !prev);
+            }
+          }}
+          className="text-gray-700 hover:text-green-600"
+        >
+          <Menu size={26} />
+        </button>
 
         {/* logo central */}
         <div className="flex-grow text-center">
@@ -118,7 +115,6 @@ export default function Navbar({
         className={`hidden md:flex flex-col bg-[#ffffff] border-r transition-all duration-300 ease-in-out 
         ${collapsed ? "w-16" : "w-64"} h-screen fixed top-0 left-0 z-20 pt-14`}
       >
-        
         <SidebarContent />
       </aside>
 

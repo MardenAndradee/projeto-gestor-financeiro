@@ -9,15 +9,26 @@ type LancamentosFormProps = {
   idParcela: number | null;
 };
 
-export default function LancamentosForm({ onClose, idParcela, atualizarLancamentos }: LancamentosFormProps) {
+export default function LancamentosForm({
+  onClose,
+  idParcela,
+  atualizarLancamentos,
+}: LancamentosFormProps) {
   const {
-    descricao, setdescricao,
-    valor, setValor,
-    idCategoria, setIdCategoria,
-    data, setData,
-    formaPagamento, setFormaPagamento,
-    qtdParcelas, setQtdParcelas,
-    usuario, setUsuario,
+    descricao,
+    setdescricao,
+    valor,
+    setValor,
+    idCategoria,
+    setIdCategoria,
+    data,
+    setData,
+    formaPagamento,
+    setFormaPagamento,
+    qtdParcelas,
+    setQtdParcelas,
+    usuario,
+    setUsuario,
     error,
     success,
     handleLancamento,
@@ -26,14 +37,15 @@ export default function LancamentosForm({ onClose, idParcela, atualizarLancament
     lancamentos,
   } = useLancamentos();
 
-  const{
+  const {
     categorias,
-    categoria, setCategoria,
+    categoria,
+    setCategoria,
     handleGetCategorias,
     handleCategorias,
-    handleGetCategoriaById
+    handleGetCategoriaById,
   } = useCategorias();
-  const [oneCategoria, setOneCategoria] = useState<string>('');
+  const [oneCategoria, setOneCategoria] = useState<string>("");
 
   useEffect(() => {
     handleGetCategorias();
@@ -46,74 +58,75 @@ export default function LancamentosForm({ onClose, idParcela, atualizarLancament
   }, [formaPagamento]);
 
   useEffect(() => {
-  if (idParcela !== null) {
-    handleGetOneLancamento(idParcela)
-      .then((lancamentos) => {
+    if (idParcela !== null) {
+      handleGetOneLancamento(idParcela).then((lancamentos) => {
         setdescricao(lancamentos.descricao);
         setValor(lancamentos.valor);
         setIdCategoria(lancamentos.idCategoria);
         setData(lancamentos.dataParcela);
         setFormaPagamento(lancamentos.formaPagamento);
         setQtdParcelas(lancamentos.qtdParcelas || 1);
+      });
+    } else {
+      setdescricao("");
+      setValor("");
+      setCategoria("Contas Fixas");
+      setData(obterDataHoje());
+      setFormaPagamento("Débito");
+      setQtdParcelas(1);
+      setUsuario("");
+    }
+  }, [idParcela]);
 
-    })
-
-  } else {
-    setdescricao('');
-    setValor('');
-    setCategoria('Contas Fixas');
-    setData(obterDataHoje());
-    setFormaPagamento('Débito');
-    setQtdParcelas(1);
-    setUsuario('');
-  }
-}, [idParcela]);
-
-useEffect(() => {
-  if (idCategoria) {
-    handleGetCategoriaById(idCategoria).then((categoriaData) => {
-      if (categoriaData && categoriaData.categoria) {
-        setCategoria(categoriaData.categoria); // Preenche o nome da categoria
-      }
-    });
-  }
-}, []);
+  useEffect(() => {
+    if (idCategoria) {
+      handleGetCategoriaById(idCategoria).then((categoriaData) => {
+        if (categoriaData && categoriaData.categoria) {
+          setCategoria(categoriaData.categoria); // Preenche o nome da categoria
+        }
+      });
+    }
+  }, []);
 
   function obterDataHoje() {
     const hoje = new Date();
-    const dataHoje = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+    const dataHoje = new Date(
+      hoje.getFullYear(),
+      hoje.getMonth(),
+      hoje.getDate()
+    );
     return dataHoje.toISOString().split("T")[0];
   }
-
-
 
   const [showCategoriaModal, setShowCategoriaModal] = useState(false);
   const [novaCategoria, setNovaCategoria] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-     if (idParcela !== null) {
+    if (idParcela !== null) {
       await handleEditLancamento(idParcela);
       atualizarLancamentos();
       onClose();
-    }else{
+    } else {
       const sucesso = await handleLancamento();
 
-    if(sucesso){
+      if (sucesso) {
         atualizarLancamentos();
-      onClose();
-    }
+        onClose();
+      }
     }
   };
 
   const handleAddCategoria = async () => {
-      const sucesso = await handleCategorias();
-      setNovaCategoria("");
-      setShowCategoriaModal(false);
-      handleGetCategorias();
+    const sucesso = await handleCategorias();
+    setNovaCategoria("");
+    setShowCategoriaModal(false);
+    handleGetCategorias();
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
 
     switch (name) {
@@ -148,7 +161,9 @@ useEffect(() => {
       <form onSubmit={handleSubmit}>
         <div className="fixed inset-0 backdrop-blur-sm flex justify-center items-center z-10">
           <div className="bg-white p-6 rounded-xl shadow-lg w-11/12 max-w-md">
-            <h3 className="text-xl font-bold font-mono mb-4 text-gray-900">Adicionar Lançamento</h3>
+            <h3 className="text-xl font-bold font-mono mb-4 text-gray-900">
+              Adicionar Lançamento
+            </h3>
 
             <input
               type="text"
@@ -169,33 +184,33 @@ useEffect(() => {
             />
 
             <div className="flex items-center gap-2 mb-3">
-            <select
-          name="idCategoria"
-          value={idCategoria}
-          onChange={(e) => setIdCategoria(Number(e.target.value))}
-          className="w-full mb-2 px-4 py-2 border rounded-lg bg-white text-gray-400"
-        >
-          <option value={1}>Contas fixas</option>
-          <option value={2}>Alimentação</option>
-          <option value={3}>Aluguel</option>
-          <option value={4}>Conta Telefone</option>
-          <option value={5}>Saúde</option>
-          <option value={6}>Vestuário</option>
-          <option value={7}>Lazer</option>
-          <option value={8}>Transporte</option>
-          <option value={9}>Mercado</option>
-          <option value={10}>Eletrônicos</option>
-          <option value={11}>Salão</option>
-          {(categorias || []).map((cat) => (
-    <option key={cat.idCategoria} value={cat.idCategoria}>
-      {cat.categoria}
-    </option>
-  ))}
-        </select>
+              <select
+                name="idCategoria"
+                value={idCategoria}
+                onChange={(e) => setIdCategoria(Number(e.target.value))}
+                className="w-full mb-3 px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400"
+              >
+                <option value={1}>Contas fixas</option>
+                <option value={2}>Alimentação</option>
+                <option value={3}>Aluguel</option>
+                <option value={4}>Conta Telefone</option>
+                <option value={5}>Saúde</option>
+                <option value={6}>Vestuário</option>
+                <option value={7}>Lazer</option>
+                <option value={8}>Transporte</option>
+                <option value={9}>Mercado</option>
+                <option value={10}>Eletrônicos</option>
+                <option value={11}>Salão</option>
+                {(categorias || []).map((cat) => (
+                  <option key={cat.idCategoria} value={cat.idCategoria}>
+                    {cat.categoria}
+                  </option>
+                ))}
+              </select>
               <button
                 type="button"
                 onClick={() => setShowCategoriaModal(true)}
-                className="bg-green-500 hover:bg-green-600 text-white t font-bold py-1 px-3 rounded-full"
+                className="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-full"
               >
                 +
               </button>
@@ -206,7 +221,7 @@ useEffect(() => {
               name="data"
               value={data}
               onChange={(e) => setData(e.target.value)}
-              className="w-full mb-3 px-4 py-2 border rounded-lg bg-white text-gray-400"
+              className="w-full mb-3 px-4 py-2 border rounded-lg bg-white text-gray-900"
             />
 
             <select
@@ -214,7 +229,7 @@ useEffect(() => {
               value={formaPagamento}
               onChange={(e) => setFormaPagamento(e.target.value)}
               disabled={idParcela !== null}
-              className="w-full mb-3 px-4 py-2 border rounded-lg bg-white text-gray-400"
+              className="w-full mb-3 px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400"
             >
               <option value={"Débito"}>Débito</option>
               <option value={"Crédito"}>Crédito</option>
@@ -255,18 +270,20 @@ useEffect(() => {
       </form>
 
       {/* Cadastro de categoria */}
-    
+
       {showCategoriaModal && (
         <div className="fixed inset-0 backdrop-blur-sm flex justify-center items-center z-10">
           <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">Nova Categoria</h3>
+            <h3 className="text-lg font-bold font-mono mb-4 text-gray-800">
+              Nova Categoria
+            </h3>
 
             <input
               type="text"
               value={categoria}
               onChange={(e) => setCategoria(e.target.value)}
               placeholder="Nome da categoria"
-              className="w-full mb-4 px-4 py-2 border rounded-lg"
+              className="w-full mb-3 px-4 py-2 border rounded-lg bg-white text-gray-900 placeholder-gray-400"
             />
 
             <div className="flex justify-end space-x-2">

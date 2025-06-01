@@ -2,23 +2,27 @@
 import { useRegister } from "../hooks/useRegister";
 
 export default function CadastroForm() {
-    const {
-      nome, setNome,
-      email, setEmail,
-      login, setLogin,
-      senha, setSenha,
-      confirmarSenha, setConfirmarSenha,
-      error,
-      success,
-      handleRegister,
-    } = useRegister();
-  
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      await handleRegister();
-    };
-  
-  
+  const {
+    nome,
+    setNome,
+    email,
+    setEmail,
+    login,
+    setLogin,
+    senha,
+    setSenha,
+    confirmarSenha,
+    setConfirmarSenha,
+    error,
+    success,
+    handleRegister,
+  } = useRegister();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await handleRegister();
+  };
+
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       <div>
@@ -42,13 +46,11 @@ export default function CadastroForm() {
           placeholder="Digite seu e-mail"
           value={email}
           onChange={(e) => {
-            setEmail(e.target.value)
-            setLogin(e.target.value)
-          }
-        }
+            setEmail(e.target.value);
+            setLogin(e.target.value);
+          }}
         />
       </div>
-
 
       <div>
         <label className="block text-sm font-medium text-gray-700">Senha</label>
@@ -74,7 +76,7 @@ export default function CadastroForm() {
         />
       </div>
 
-      <button 
+      <button
         type="submit"
         className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-lg transition"
       >

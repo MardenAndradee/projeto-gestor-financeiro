@@ -23,15 +23,11 @@ export default function PerfilPage() {
   const router = useRouter();
 
   useEffect(() => {
-  
     const token = localStorage.getItem("token");
 
     if (!token) {
       router.push("/login");
     }
-  
-
-  
 
     fetch("http://localhost:8080/usuario/perfil", {
       method: "GET",
@@ -57,7 +53,6 @@ export default function PerfilPage() {
       })
       .finally(() => setLoading(false));
   }, []);
-  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -108,7 +103,9 @@ export default function PerfilPage() {
       const data = await response.json();
       toast.success(data.mensagem);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao atualizar dados");
+      toast.error(
+        err instanceof Error ? err.message : "Falha ao atualizar dados"
+      );
     }
   };
 
@@ -151,7 +148,9 @@ export default function PerfilPage() {
 
             {/* Dados da conta */}
             <div className="flex-1 w-full">
-              <h2 className="text-2xl font-mono text-gray-900 mb-6">Dados da Conta</h2>
+              <h2 className="text-2xl font-mono text-gray-900 mb-6">
+                Dados da Conta
+              </h2>
               {loading ? (
                 <p className="text-gray-500">Carregando dados do perfil...</p>
               ) : (
@@ -198,7 +197,9 @@ export default function PerfilPage() {
                   <p className="text-sm text-gray-500">FinUp</p>
                   <p className="text-xl font-bold text-gray-700 mb-2">Free</p>
                   <p className="text-sm text-gray-500 mb-4">
-                    Atinja suas <span className="font-semibold">metas financeiras</span> com o FinUp Premium!
+                    Atinja suas{" "}
+                    <span className="font-semibold">metas financeiras</span> com
+                    o FinUp Premium!
                   </p>
                   <button className="bg-green-600 text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-green-700 shadow">
                     EM BREVE
@@ -215,4 +216,3 @@ export default function PerfilPage() {
     </div>
   );
 }
-  
