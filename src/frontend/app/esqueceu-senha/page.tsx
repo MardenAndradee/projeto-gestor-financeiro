@@ -17,13 +17,16 @@ export default function EsqueceuSenha() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/auth/redefinir-senha", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
+      const response = await fetch(
+        "http://localhost:8080/auth/redefinir-senha",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Erro ao enviar o e-mail.");
@@ -42,14 +45,19 @@ export default function EsqueceuSenha() {
   };
 
   return (
-    <form className="space-y-5 max-w-md mx-auto mt-24 px-4" onSubmit={handleSubmit}>
+    <form
+      className="space-y-5 max-w-md mx-auto mt-24 px-4"
+      onSubmit={handleSubmit}
+    >
       <h1 className="text-2xl font-bold text-center">Esqueceu sua senha?</h1>
       <p className="text-center text-sm text-gray-600">
         Informe seu e-mail e enviaremos instruções para redefinir sua senha.
       </p>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">E-mail</label>
+        <label className="block text-sm font-medium text-gray-700">
+          E-mail
+        </label>
         <input
           type="email"
           className="text-black mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-green-600 focus:border-green-600"
@@ -75,6 +83,3 @@ export default function EsqueceuSenha() {
     </form>
   );
 }
-
-
-

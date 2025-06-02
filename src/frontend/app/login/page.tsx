@@ -4,9 +4,10 @@ import loginImage from "../public/img_login.png";
 
 export default function LoginPage() {
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen items-center justify-center px-4 lg:gap-x-20"style={{ backgroundColor: "#EDF3FB" }}>
-
-
+    <div
+      className="flex flex-col lg:flex-row min-h-screen items-center justify-center px-4 lg:gap-x-20"
+      style={{ backgroundColor: "#EDF3FB" }}
+    >
       {/* Lado esquerdo - SOMENTE EM TELAS GRANDES */}
       <div className="hidden lg:flex flex-col items-center justify-center text-center px-8">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">

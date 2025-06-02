@@ -8,7 +8,6 @@ export default function AuthCard() {
 
   return (
     <div className="w-full max-w-md flex flex-col items-center justify-center">
-
       {/* ENTRAR / CADASTRAR */}
       <div className="flex justify-center items-center mb-6">
         <div className="flex space-x-10 w-full justify-center border-b border-gray-200">
@@ -38,7 +37,6 @@ export default function AuthCard() {
       {/* Área com rolagem se necessário */}
       <div className="overflow-y-auto px-2 w-full">
         {isLogin ? <LoginForm /> : <CadastroForm />}
-        
       </div>
     </div>
   );

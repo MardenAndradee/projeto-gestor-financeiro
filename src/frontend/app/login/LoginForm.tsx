@@ -1,6 +1,6 @@
 "use client";
 import { useAuth } from "../hooks/useAuth";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const { login, setLogin, senha, setSenha, error, handleLogin } = useAuth();
@@ -58,4 +58,3 @@ export default function LoginForm() {
     </form>
   );
 }
-
