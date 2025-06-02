@@ -29,14 +29,17 @@ export default function RedefinirSenha() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/auth/redefinir-senha", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ novaSenha }),
-      });
+      const response = await fetch(
+        "http://localhost:8080/auth/redefinir-senha",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ novaSenha }),
+        }
+      );
 
       if (response.ok) {
         setMensagem("Senha redefinida com sucesso!");
@@ -56,10 +59,14 @@ export default function RedefinirSenha() {
         onSubmit={handleSubmit}
         className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl space-y-6"
       >
-        <h1 className="text-3xl font-bold text-center text-gray-800">Redefinir Senha</h1>
+        <h1 className="text-3xl font-bold text-center text-gray-800">
+          Redefinir Senha
+        </h1>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Nova senha</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Nova senha
+          </label>
           <input
             type="password"
             value={novaSenha}
@@ -74,7 +81,9 @@ export default function RedefinirSenha() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Confirmar senha</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Confirmar senha
+          </label>
           <input
             type="password"
             value={confirmarSenha}
